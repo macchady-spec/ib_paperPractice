@@ -1,0 +1,2456 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>IB Digital Society — Response Studio · Standard</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0E1020;--surface:#161932;--surface2:#1D2144;--surface3:#262B55;--border:#2E3360;
+  --text:#E8EAF5;--text2:#AAB0D2;--muted:#7379A8;--shadow:rgba(0,0,0,.55);
+  --gold:#E8B84B;--gold-dim:rgba(232,184,75,.12);--gold-bd:rgba(232,184,75,.32);
+  --teal:#22D3BB;--teal-dim:rgba(34,211,187,.1);--teal-bd:rgba(34,211,187,.3);
+  --ok:#10B981;--ok-bg:rgba(16,185,129,.1);--ok-bd:rgba(16,185,129,.3);
+  --warn:#F59E0B;--warn-bg:rgba(245,158,11,.1);--warn-bd:rgba(245,158,11,.3);
+  --err:#F43F5E;--err-bg:rgba(244,63,94,.1);--err-bd:rgba(244,63,94,.3);
+  --DEF:#F59E0B;--EV:#10B981;--SH:#3B82F6;--IMP:#06B6D4;--LINK:#F97316;
+  --JDG:#E8B84B;--ARGP:#84CC16;--ARGM:#F43F5E;--CB:#8B5CF6;
+  --SIM:#22D3BB;--DIFF:#E879F9;--SRCC:#60A5FA;--SRCD:#FB7185;
+}
+html,body{height:100%}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Inter,sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;line-height:1.5}
+
+/* ── HEADER ── */
+header{position:sticky;top:0;z-index:50;background:var(--surface);border-bottom:1px solid var(--border);padding:10px 18px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;box-shadow:0 2px 8px var(--shadow)}
+.brand{font-family:Georgia,serif;font-size:18px;color:var(--gold);font-weight:700;letter-spacing:.3px}
+.brand em{font-style:normal;color:var(--muted);font-size:11px;margin-left:6px;font-weight:400;font-family:-apple-system,sans-serif;letter-spacing:.5px;text-transform:uppercase}
+.h-sep{width:1px;height:22px;background:var(--border)}
+.fam-group{display:flex;gap:4px;align-items:center}
+.fam-label{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.1em;font-weight:700;margin-right:4px}
+.fam{padding:6px 11px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--text2);cursor:pointer;font-size:11px;font-weight:600;transition:all .12s;font-family:inherit}
+.fam:hover{border-color:var(--gold);color:var(--text)}
+.fam.on{background:var(--gold-dim);border-color:var(--gold);color:var(--gold)}
+.fam small{opacity:.7;font-weight:500;margin-left:3px}
+.h-space{flex:1}
+.h-btn{padding:7px 12px;border-radius:6px;border:1px solid var(--border);background:var(--surface2);color:var(--text2);cursor:pointer;font-size:11px;font-weight:600;transition:all .12s;font-family:inherit}
+.h-btn:hover{border-color:var(--teal);color:var(--teal)}
+.h-btn.on{background:var(--teal-dim);border-color:var(--teal);color:var(--teal)}
+.save-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--ok);margin-right:5px;vertical-align:middle}
+.saveind{font-size:10px;color:var(--muted);padding:5px 8px;border-radius:4px;background:var(--surface2);border:1px solid var(--border)}
+
+/* ── STEP RAIL ── */
+.rail{position:sticky;top:64px;z-index:40;background:var(--surface);border-bottom:1px solid var(--border);padding:8px 18px;display:flex;gap:4px;overflow-x:auto}
+.rstep{flex:0 0 auto;padding:8px 12px;border-radius:6px;background:transparent;border:1px solid var(--border);color:var(--text2);cursor:pointer;font-size:11px;font-weight:600;transition:all .12s;display:flex;align-items:center;gap:7px;font-family:inherit}
+.rstep:hover{border-color:var(--teal);color:var(--text)}
+.rstep.on{background:var(--teal-dim);border-color:var(--teal);color:var(--teal)}
+.rstep .rn{width:18px;height:18px;border-radius:50%;background:var(--surface3);color:var(--text2);font-size:10px;font-weight:700;display:inline-flex;align-items:center;justify-content:center}
+.rstep.on .rn{background:var(--teal);color:#0E1020}
+.rstep.done .rn{background:var(--ok);color:#0E1020}
+
+/* ── LAYOUT ── */
+main{max-width:1280px;margin:0 auto;padding:22px 18px 80px}
+.panel{display:none;animation:fadeIn .2s}
+.panel.on{display:block}
+@keyframes fadeIn{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+.ptitle{font-family:Georgia,serif;font-size:22px;color:var(--gold);margin-bottom:4px}
+.psub{font-size:12px;color:var(--muted);margin-bottom:18px}
+
+/* ── CARDS ── */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:14px}
+.card h3{font-size:12px;text-transform:uppercase;letter-spacing:.1em;color:var(--gold);margin-bottom:8px;font-weight:700}
+.card p{font-size:13px;color:var(--text2);line-height:1.6}
+.card ul{list-style:none;padding:0}
+.card li{font-size:13px;color:var(--text2);padding:4px 0 4px 18px;position:relative;line-height:1.55}
+.card li::before{content:"›";color:var(--gold);position:absolute;left:4px;font-weight:700}
+.card.teal h3{color:var(--teal)}
+.card.teal{border-color:var(--teal-bd);background:linear-gradient(180deg,var(--teal-dim),var(--surface))}
+.card.warn h3{color:var(--warn)}
+.card.warn{border-color:var(--warn-bd)}
+.card.err h3{color:var(--err)}
+.card.err{border-color:var(--err-bd)}
+.card.ok h3{color:var(--ok)}
+.card.ok{border-color:var(--ok-bd)}
+
+/* Question block */
+.qhead{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-start;margin-bottom:8px}
+.qhead .chip{font-size:10px;font-weight:700;padding:3px 8px;border-radius:4px;background:var(--surface3);color:var(--text);text-transform:uppercase;letter-spacing:.08em}
+.qhead .chip.gold{background:var(--gold);color:#0E1020}
+.qhead .chip.teal{background:var(--teal);color:#0E1020}
+.qtext{font-size:14px;color:var(--text);line-height:1.65;padding:12px 14px;background:var(--surface2);border-left:3px solid var(--gold);border-radius:4px;margin-top:6px;white-space:pre-wrap}
+.qhint{font-size:11px;color:var(--muted);margin-top:6px;font-style:italic}
+
+/* ── GRIDS ── */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.grid-sbs{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+@media(max-width:900px){.grid2,.grid-sbs{grid-template-columns:1fr}}
+
+/* ── INPUTS ── */
+label.field{display:block;margin-bottom:12px}
+label.field>.lbl{display:block;font-size:11px;font-weight:700;color:var(--text);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px}
+label.field>.lbl small{color:var(--muted);font-weight:500;text-transform:none;letter-spacing:0;margin-left:6px;font-size:10px;font-style:italic}
+.input,.ta{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:8px 10px;color:var(--text);font-family:inherit;font-size:13px;line-height:1.55;resize:vertical;transition:border-color .12s}
+.ta{min-height:60px}
+.ta.long{min-height:120px}
+.ta.xlong{min-height:300px}
+.input:focus,.ta:focus{outline:none;border-color:var(--teal);background:var(--surface3)}
+.hint{font-size:11px;color:var(--muted);margin-top:4px;line-height:1.5}
+
+/* ── CHECKLIST ── */
+.clist{list-style:none;padding:0}
+.cli{display:flex;gap:10px;padding:9px 11px;border:1px solid var(--border);border-radius:6px;margin-bottom:6px;background:var(--surface2);cursor:pointer;transition:all .12s;align-items:flex-start}
+.cli:hover{border-color:var(--teal);background:var(--surface3)}
+.cli input{margin-top:3px;cursor:pointer;accent-color:var(--teal)}
+.cli-text{font-size:12px;color:var(--text);flex:1;line-height:1.5}
+.cli.checked{background:var(--ok-bg);border-color:var(--ok-bd)}
+.cli.checked .cli-text{color:var(--ok)}
+.cli .cli-hint{font-size:10px;color:var(--muted);margin-top:3px;font-style:italic}
+.cli .cap-warn{font-size:9px;font-weight:700;color:var(--err);background:var(--err-bg);border:1px solid var(--err-bd);padding:1px 5px;border-radius:3px;margin-left:4px;text-transform:uppercase;letter-spacing:.04em}
+
+/* ── RUBRIC ── */
+.band{background:var(--surface2);border:1px solid var(--border);border-radius:7px;padding:10px 12px;margin-bottom:6px}
+.band-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:4px;gap:8px}
+.band-lvl{font-size:12px;font-weight:700}
+.band-m{padding:2px 7px;border-radius:3px;font-size:10px;font-weight:700;white-space:nowrap}
+.band-m.top{background:var(--gold);color:#0E1020}
+.band-m.good{background:var(--ok);color:#fff}
+.band-m.mid{background:var(--warn);color:#0E1020}
+.band-m.low{background:var(--err);color:#fff}
+.band-d{font-size:12px;color:var(--text2);line-height:1.55}
+
+/* ── ANNOTATION STAMPS ── */
+.stampbar{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px;padding:10px;background:var(--surface2);border:1px solid var(--border);border-radius:6px}
+.stamp{padding:4px 9px;border-radius:4px;font-size:10px;font-weight:700;letter-spacing:.04em;border:1.5px solid;background:transparent;cursor:pointer;transition:all .12s;font-family:inherit}
+.stamp[data-s="DEF"]{color:var(--DEF);border-color:var(--DEF)}
+.stamp[data-s="EV"]{color:var(--EV);border-color:var(--EV)}
+.stamp[data-s="SH"]{color:var(--SH);border-color:var(--SH)}
+.stamp[data-s="IMP"]{color:var(--IMP);border-color:var(--IMP)}
+.stamp[data-s="LINK"]{color:var(--LINK);border-color:var(--LINK)}
+.stamp[data-s="JDG"]{color:var(--JDG);border-color:var(--JDG)}
+.stamp[data-s="ARG+"]{color:var(--ARGP);border-color:var(--ARGP)}
+.stamp[data-s="ARG-"]{color:var(--ARGM);border-color:var(--ARGM)}
+.stamp[data-s="CB"]{color:var(--CB);border-color:var(--CB)}
+.stamp[data-s="SIM"]{color:var(--SIM);border-color:var(--SIM)}
+.stamp[data-s="DIFF"]{color:var(--DIFF);border-color:var(--DIFF)}
+.stamp[data-s="SRC-C"]{color:var(--SRCC);border-color:var(--SRCC)}
+.stamp[data-s="SRC-D"]{color:var(--SRCD);border-color:var(--SRCD)}
+.stamp:hover{transform:translateY(-1px)}
+.stamp-legend{font-size:10px;color:var(--muted);line-height:1.6;margin-top:4px}
+
+/* Evidence map */
+.emap{background:var(--surface);border:1px solid var(--border);border-radius:8px;overflow:hidden}
+.emap-row{display:grid;grid-template-columns:100px 1fr 1fr 28px;gap:1px;background:var(--border)}
+.emap-cell{background:var(--surface);padding:7px 9px;font-size:11px;color:var(--text2)}
+.emap-cell.label{font-weight:700;color:var(--text)}
+.emap-cell input{width:100%;background:transparent;border:none;color:var(--text);font-size:12px;font-family:inherit;padding:2px 0}
+.emap-cell input:focus{outline:none}
+.emap-cell .tag{font-size:9px;font-weight:700;padding:2px 6px;border-radius:3px;color:#0E1020}
+.emap-add{display:flex;gap:5px;margin-top:8px;flex-wrap:wrap}
+
+/* ── INLINE RESPONSE ANNOTATOR ── */
+.annot-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:14px}
+@media(max-width:980px){.annot-grid{grid-template-columns:1fr}}
+.annot-help{font-size:11px;color:var(--muted);margin-bottom:8px;line-height:1.6}
+.annot-help strong{color:var(--text)}
+.annot-toolbar{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 8px}
+.annot-status{font-size:11px;color:var(--muted);margin-bottom:8px;min-height:18px}
+.annot-status.warn{color:var(--warn)}
+.annot-status.err{color:var(--err)}
+.annot-surface-wrap{border:1px solid var(--border);border-radius:10px;background:var(--surface2);padding:12px}
+.annot-surface{min-height:260px;max-height:420px;overflow:auto;padding:14px;border:1px dashed var(--border);border-radius:8px;background:var(--surface);line-height:1.8;font-size:14px;color:var(--text)}
+.annot-surface p{margin:0 0 12px 0}
+.annot-surface p:last-child{margin-bottom:0}
+.annot-surface.empty{display:flex;align-items:center;justify-content:center;color:var(--muted);font-style:italic}
+.inline-annot{--ann-color:var(--gold);border-bottom:3px solid var(--ann-color);padding:0 .08em;border-radius:4px;position:relative;background:rgba(255,255,255,.02)}
+.inline-annot[data-stamp="DEF"]{--ann-color:var(--DEF)}
+.inline-annot[data-stamp="EV"]{--ann-color:var(--EV)}
+.inline-annot[data-stamp="SH"]{--ann-color:var(--SH)}
+.inline-annot[data-stamp="IMP"]{--ann-color:var(--IMP)}
+.inline-annot[data-stamp="LINK"]{--ann-color:var(--LINK)}
+.inline-annot[data-stamp="JDG"]{--ann-color:var(--JDG)}
+.inline-annot[data-stamp="ARG+"]{--ann-color:var(--ARGP)}
+.inline-annot[data-stamp="ARG-"]{--ann-color:var(--ARGM)}
+.inline-annot[data-stamp="CB"]{--ann-color:var(--CB)}
+.inline-annot[data-stamp="SIM"]{--ann-color:var(--SIM)}
+.inline-annot[data-stamp="DIFF"]{--ann-color:var(--DIFF)}
+.inline-annot[data-stamp="SRC-C"]{--ann-color:var(--SRCC)}
+.inline-annot[data-stamp="SRC-D"]{--ann-color:var(--SRCD)}
+.inline-badge{display:inline-flex;align-items:center;justify-content:center;margin-left:4px;padding:1px 5px;border-radius:10px;font-size:9px;font-weight:800;letter-spacing:.04em;background:var(--ann-color);color:#0E1020;vertical-align:middle}
+.annot-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.annot-summary{font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.6}
+.annot-summary .tag{font-size:9px;font-weight:700;padding:2px 6px;border-radius:3px;color:#0E1020;margin-right:4px}
+.annot-log{display:flex;flex-direction:column;gap:8px}
+.annot-log-empty{border:1px dashed var(--border);border-radius:8px;padding:12px;color:var(--muted);font-size:12px;font-style:italic}
+.annot-item{border:1px solid var(--border);border-radius:8px;background:var(--surface2);padding:10px}
+.annot-item-head{display:flex;align-items:flex-start;gap:8px;margin-bottom:6px}
+.annot-item-head .tag{font-size:9px;font-weight:700;padding:2px 6px;border-radius:3px;color:#0E1020;flex:0 0 auto}
+.annot-quote{font-size:12px;color:var(--text);line-height:1.6;flex:1}
+.annot-item-note{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:6px;padding:8px 10px;color:var(--text);font-family:inherit;font-size:12px;line-height:1.5}
+.annot-item-note:focus{outline:none;border-color:var(--teal)}
+.annot-warn{margin-bottom:10px;padding:10px 12px;background:var(--warn-bg);border:1px solid var(--warn-bd);border-radius:8px;font-size:11px;color:var(--warn);line-height:1.6}
+.annot-warn strong{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px}
+.emap-del{background:transparent;border:none;color:var(--muted);cursor:pointer;font-size:14px;padding:0 4px}
+.emap-del:hover{color:var(--err)}
+.emap-head{background:var(--surface2);font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:700}
+
+/* ── SCORE CARD ── */
+.scorecard{background:linear-gradient(140deg,var(--gold-dim) 0%,var(--surface) 50%);border:2px solid var(--gold);border-radius:12px;padding:20px;margin-bottom:14px;position:relative;overflow:hidden}
+.sc-label{font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:var(--gold);font-weight:700;margin-bottom:4px}
+.sc-main{display:flex;align-items:baseline;gap:10px;margin-bottom:6px}
+.sc-num{font-family:Georgia,serif;font-size:56px;color:var(--gold);font-weight:700;line-height:1}
+.sc-max{font-size:20px;color:var(--muted)}
+.sc-band{font-size:12px;padding:4px 10px;border-radius:4px;background:var(--surface3);color:var(--text);font-weight:600;border:1px solid var(--border)}
+.sc-band.top{background:var(--gold);color:#0E1020;border-color:var(--gold)}
+.sc-band.good{background:var(--ok);color:#fff;border-color:var(--ok)}
+.sc-band.mid{background:var(--warn);color:#0E1020;border-color:var(--warn)}
+.sc-band.low{background:var(--err);color:#fff;border-color:var(--err)}
+.sc-caveat{font-size:11px;color:var(--muted);font-style:italic;margin-top:6px}
+.sc-caps{margin-top:10px;padding:8px 10px;background:var(--err-bg);border:1px solid var(--err-bd);border-radius:6px;font-size:11px;color:var(--err);line-height:1.6;display:none}
+.sc-caps.vis{display:block}
+.sc-caps strong{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px}
+.sc-notes{margin-top:10px;font-size:11px;color:var(--text2);line-height:1.6}
+
+/* AI prompt area */
+.promptbox{background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:12px;font-family:Menlo,Monaco,Consolas,monospace;font-size:11px;color:var(--text2);line-height:1.55;white-space:pre-wrap;max-height:360px;overflow-y:auto}
+.copybtn{margin-top:8px;padding:8px 14px;background:var(--teal);color:#0E1020;border:none;border-radius:6px;cursor:pointer;font-weight:700;font-family:inherit;font-size:12px}
+.copybtn:hover{opacity:.9}
+.copybtn.done{background:var(--ok);color:#fff}
+
+/* Nav buttons between steps */
+.stepnav{display:flex;justify-content:space-between;margin-top:18px;gap:10px}
+.stepnav button{padding:10px 18px;border:1px solid var(--border);border-radius:6px;background:var(--surface2);color:var(--text);cursor:pointer;font-weight:600;font-family:inherit;font-size:12px}
+.stepnav button.primary{background:var(--teal);color:#0E1020;border-color:var(--teal)}
+.stepnav button.primary:hover{opacity:.9}
+.stepnav button:hover{border-color:var(--teal)}
+
+/* Modal */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.72);z-index:100;display:none;align-items:center;justify-content:center;padding:18px}
+.modal-bg.vis{display:flex}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:12px;max-width:700px;width:100%;max-height:90vh;overflow-y:auto;padding:24px;box-shadow:0 20px 60px var(--shadow)}
+.modal h2{font-family:Georgia,serif;color:var(--gold);font-size:20px;margin-bottom:4px}
+.modal-sub{font-size:11px;color:var(--muted);margin-bottom:14px}
+.modal-close-row{display:flex;gap:8px;justify-content:flex-end;margin-top:14px}
+.modal-close-row button{padding:9px 16px;border-radius:6px;border:1px solid var(--border);background:var(--surface2);color:var(--text);cursor:pointer;font-family:inherit;font-size:12px;font-weight:600}
+.modal-close-row button.primary{background:var(--teal);color:#0E1020;border-color:var(--teal)}
+
+/* Exemplar narrative */
+.exemplar-narrative{background:linear-gradient(140deg,var(--teal-dim),var(--surface));border:1px dashed var(--teal-bd);border-radius:10px;padding:14px;margin-bottom:14px;display:none}
+.exemplar-narrative.vis{display:block}
+.exemplar-narrative h4{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--teal);font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.exemplar-narrative h4::before{content:"◆";color:var(--teal)}
+.exemplar-narrative p,.exemplar-narrative li{font-size:12px;color:var(--text2);line-height:1.65}
+.exemplar-narrative ul{padding-left:18px;margin:4px 0}
+.exemplar-narrative strong{color:var(--text)}
+.exmode-banner{background:var(--teal-dim);border:1px solid var(--teal);border-radius:6px;padding:8px 12px;margin-bottom:14px;font-size:12px;color:var(--teal);display:none;align-items:center;gap:8px}
+.exmode-banner.vis{display:flex}
+.exmode-banner strong{font-weight:700}
+
+/* Misc */
+.pill{font-size:10px;padding:2px 8px;border-radius:10px;background:var(--surface3);color:var(--text2);font-weight:600;letter-spacing:.02em}
+.row-act{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.mini-btn{padding:6px 10px;border-radius:5px;border:1px solid var(--border);background:var(--surface2);color:var(--text2);cursor:pointer;font-size:11px;font-weight:600;font-family:inherit}
+.mini-btn:hover{border-color:var(--teal);color:var(--teal)}
+.mini-btn.danger{color:var(--err);border-color:var(--err-bd)}
+.mini-btn.danger:hover{background:var(--err-bg)}
+.two-col-list{columns:2;column-gap:20px}
+@media(max-width:720px){.two-col-list{columns:1}}
+.gate{padding:10px 12px;background:var(--warn-bg);border:1px solid var(--warn-bd);color:var(--warn);font-size:11px;border-radius:6px;margin-bottom:12px;display:none}
+.gate.vis{display:block}
+.teacher-row{display:grid;grid-template-columns:1fr 1fr 1fr 1fr 60px 28px;gap:6px;margin-bottom:6px;align-items:flex-start}
+.teacher-row input,.teacher-row textarea{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:5px;padding:6px 8px;color:var(--text);font-family:inherit;font-size:11px;resize:vertical;min-height:34px}
+.teacher-row .emap-del{min-height:30px}
+.teacher-head{background:var(--surface2);padding:8px;border-radius:6px;margin-bottom:6px;font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:700;display:grid;grid-template-columns:1fr 1fr 1fr 1fr 60px 28px;gap:6px}
+@media(max-width:1000px){
+  .teacher-row,.teacher-head{grid-template-columns:1fr 1fr}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">DigSoc Response Studio<em>Student · guided simulator</em></div>
+  <div class="h-sep"></div>
+  <div class="fam-group">
+    <span class="fam-label">P1</span>
+    <button class="fam" data-fam="P1-2">2<small>id</small></button>
+    <button class="fam" data-fam="P1-4">4<small>exp</small></button>
+    <button class="fam" data-fam="P1-6">6<small>anl</small></button>
+    <button class="fam" data-fam="P1-8">8<small>dsc</small></button>
+  </div>
+  <div class="h-sep"></div>
+  <div class="fam-group">
+    <span class="fam-label">P2</span>
+    <button class="fam" data-fam="P2-Q1">Q1<small>2</small></button>
+    <button class="fam" data-fam="P2-Q2">Q2<small>4</small></button>
+    <button class="fam" data-fam="P2-Q3">Q3<small>6</small></button>
+    <button class="fam" data-fam="P2-Q4">Q4<small>12</small></button>
+  </div>
+  <div class="h-space"></div>
+  <button class="h-btn" id="btnExemplar">Exemplar Mode</button>
+  <button class="h-btn" id="btnCustom">Custom Question</button>
+  <button class="h-btn" id="btnLoadDemo">Load Worked Example</button>
+  <button class="h-btn" id="btnImportJson">Import JSON</button>
+  <button class="h-btn" id="btnReset">Reset</button>
+  <span class="saveind" id="saveind"><span class="save-dot"></span>autosaved</span>
+</header>
+
+<nav class="rail" id="rail">
+  <button class="rstep" data-step="1"><span class="rn">1</span>Understand</button>
+  <button class="rstep" data-step="2"><span class="rn">2</span>Exemplar mindset</button>
+  <button class="rstep" data-step="3"><span class="rn">3</span>Brainstorm</button>
+  <button class="rstep" data-step="4"><span class="rn">4</span>Write</button>
+  <button class="rstep" data-step="5"><span class="rn">5</span>Annotate</button>
+  <button class="rstep" data-step="6"><span class="rn">6</span>Self-assess</button>
+  <button class="rstep" data-step="7"><span class="rn">7</span>Score + AI prompt</button>
+</nav>
+
+<main>
+
+  <div class="exmode-banner" id="exBanner"><strong>Exemplar walkthrough mode active.</strong> Read-only guidance panels are visible at every step. Your inputs are preserved and will reappear when you turn the mode off.</div>
+
+  <div class="card teal" id="demoNotice" style="display:none;margin-bottom:14px">
+    <h3>Loaded worked example</h3>
+    <p>A worked example is currently loaded. You can clear it, import your own JSON question pack, or create a custom question.</p>
+  </div>
+
+  <div class="card" id="blankNotice" style="display:none;margin-bottom:14px">
+    <h3>Start here</h3>
+    <p>No question is loaded yet. Use <strong>Custom Question</strong>, <strong>Import JSON</strong>, or <strong>Load Worked Example</strong> to begin.</p>
+  </div>
+
+  <!-- STEP 1 -->
+  <section class="panel" id="p1">
+    <h2 class="ptitle">Step 1 · Understand the question</h2>
+    <p class="psub">Read the question slowly. Before you plan anything, make sure you know what it is actually asking.</p>
+    <div class="exemplar-narrative" id="ex1"></div>
+    <div class="card">
+      <div class="qhead" id="qhead"></div>
+      <div class="qtext" id="qtext"></div>
+      <p class="qhint" id="qhint"></p>
+    </div>
+    <div class="grid2">
+      <div class="card teal">
+        <h3>Markscheme anchors</h3>
+        <ul id="mscheme"></ul>
+      </div>
+      <div class="card warn">
+        <h3>Non-negotiables</h3>
+        <ul id="nonneg"></ul>
+      </div>
+    </div>
+    <div class="grid2">
+      <div class="card">
+        <h3>What this question is really testing</h3>
+        <p id="testing"></p>
+      </div>
+      <div class="card">
+        <h3>Command term focus</h3>
+        <p id="cmdfocus"></p>
+      </div>
+    </div>
+    <div class="grid2">
+      <div class="card err">
+        <h3>What weak students do</h3>
+        <ul id="weak"></ul>
+      </div>
+      <div class="card ok">
+        <h3>What strong students do</h3>
+        <ul id="strong"></ul>
+      </div>
+    </div>
+    <div class="stepnav"><span></span><button class="primary" data-go="2">Next · Exemplar mindset →</button></div>
+  </section>
+
+  <!-- STEP 2 -->
+  <section class="panel" id="p2">
+    <h2 class="ptitle">Step 2 · Exemplar mindset</h2>
+    <p class="psub">Inside the mind of a high-performing student before they write a single word.</p>
+    <div class="card teal">
+      <h3>What the exemplar notices and plans</h3>
+      <ul id="exmind"></ul>
+    </div>
+    <div class="grid2">
+      <div class="card">
+        <h3>How the exemplar reads the command term</h3>
+        <p id="excmd"></p>
+      </div>
+      <div class="card">
+        <h3>How the exemplar uses sources / evidence</h3>
+        <p id="exsrc"></p>
+      </div>
+    </div>
+    <div class="grid2">
+      <div class="card warn">
+        <h3>Traps the exemplar avoids</h3>
+        <ul id="extraps"></ul>
+      </div>
+      <div class="card ok">
+        <h3>What the exemplar has ready before writing</h3>
+        <ul id="explan"></ul>
+      </div>
+    </div>
+    <div class="stepnav"><button data-go="1">← Back</button><button class="primary" data-go="3">Next · Brainstorm →</button></div>
+  </section>
+
+  <!-- STEP 3 -->
+  <section class="panel" id="p3">
+    <h2 class="ptitle">Step 3 · Brainstorm before writing</h2>
+    <p class="psub">Plan first. Use keywords and fragments — not finished sentences. This scaffolds your thinking; it does not replace it.</p>
+    <div class="exemplar-narrative" id="ex3"></div>
+    <div class="card">
+      <h3>Pre-write checklist</h3>
+      <ul class="clist" id="preclist"></ul>
+    </div>
+    <div class="card">
+      <h3>Plan your response</h3>
+      <div id="brainfields"></div>
+    </div>
+    <div class="stepnav"><button data-go="2">← Back</button><button class="primary" data-go="4">Next · Write →</button></div>
+  </section>
+
+  <!-- STEP 4 -->
+  <section class="panel" id="p4">
+    <h2 class="ptitle">Step 4 · Write the response</h2>
+    <p class="psub">Your brainstorm stays visible on the left. Write the full response on the right.</p>
+    <div class="gate" id="writeGate">Complete your brainstorm in Step 3 before writing. You can still write, but a finished brainstorm produces much stronger responses.</div>
+    <div class="grid-sbs">
+      <div class="card">
+        <h3>Brainstorm (read-only echo)</h3>
+        <div id="brainecho" style="font-size:12px;color:var(--text2);line-height:1.65"></div>
+      </div>
+      <div class="card">
+        <h3>Your response <span class="pill" id="wcpill">0 words</span></h3>
+        <textarea id="writeBox" class="ta" placeholder="Write your response here…"></textarea>
+      </div>
+    </div>
+    <div class="stepnav"><button data-go="3">← Back</button><button class="primary" data-go="5">Next · Annotate →</button></div>
+  </section>
+
+  <!-- STEP 5 -->
+  <section class="panel" id="p5">
+    <h2 class="ptitle">Step 5 · Annotate the full written sample</h2>
+    <p class="psub">Select text inside the full response, click a stamp, then use the checklist to judge what is actually present. This keeps annotation tied to the real answer instead of copying fragments by hand.</p>
+    <div class="exemplar-narrative" id="ex5"></div>
+    <div class="annot-grid">
+      <div class="card">
+        <h3>Annotate your response</h3>
+        <p class="annot-help"><strong>How it works:</strong> highlight a phrase in the answer, then click a stamp. The highlight is saved and appears in the annotation log automatically.</p>
+        <div id="annotSyncWarn"></div>
+        <div class="annot-toolbar stampbar" id="stampbar"></div>
+        <p class="stamp-legend" id="stampLegend"></p>
+        <div class="annot-status" id="annotStatus">Select text in the response, then click a stamp.</div>
+        <div class="annot-surface-wrap">
+          <div class="annot-surface" id="annotatedResponse"></div>
+        </div>
+        <div class="annot-actions">
+          <button class="mini-btn" id="syncAnnotBtn">Use current Step 4 response</button>
+          <button class="mini-btn danger" id="clearAnnotBtn">Clear all annotations</button>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Annotation log</h3>
+        <p class="annot-summary" id="annotationSummary"></p>
+        <div class="annot-log" id="annotationLog"></div>
+      </div>
+    </div>
+    <div class="stepnav"><button data-go="4">← Back</button><button class="primary" data-go="6">Next · Self-assess →</button></div>
+  </section>
+
+  <!-- STEP 6 -->
+  <section class="panel" id="p6">
+    <h2 class="ptitle">Step 6 · Self-assess with checklist and rubric</h2>
+    <p class="psub">Tick only what is genuinely in your written response, using your annotations as evidence. Then compare against the official markband.</p>
+    <div class="grid2">
+      <div class="card">
+        <h3>Post-write checklist</h3>
+        <ul class="clist" id="postclist"></ul>
+      </div>
+      <div class="card teal">
+        <h3>Rubric / markband</h3>
+        <div id="rubric"></div>
+        <p class="hint" id="rubricSrc"></p>
+      </div>
+    </div>
+    <div class="stepnav"><button data-go="5">← Back</button><button class="primary" data-go="7">Next · Score →</button></div>
+  </section>
+
+  <!-- STEP 7 -->
+  <section class="panel" id="p7">
+    <h2 class="ptitle">Step 7 · Provisional score + AI prompt</h2>
+    <p class="psub">The score below is a provisional estimate based on your self-identified evidence. It is not a final mark.</p>
+    <div class="scorecard" id="scorecard">
+      <div class="sc-label">Provisional estimate based on self-identified evidence</div>
+      <div class="sc-main"><div class="sc-num" id="scNum">–</div><div class="sc-max" id="scMax">/ —</div><div class="sc-band" id="scBand">—</div></div>
+      <div class="sc-caveat">Not a final IB mark. Use the AI prompt below and your teacher's verification (Step 8) to refine.</div>
+      <div class="sc-caps" id="scCaps"></div>
+      <div class="sc-notes" id="scNotes"></div>
+    </div>
+    <div class="card">
+      <h3>AI feedback prompt (copy into Gemini / Claude / GPT)</h3>
+      <p class="hint">Copy the prompt and paste your text into the LLM. The prompt tells the AI to stay close to the rubric, not to inflate praise, and not to rewrite your answer for you.</p>
+      <div class="promptbox" id="promptBox"></div>
+      <button class="copybtn" id="copyBtn">Copy prompt to clipboard</button>
+    </div>
+    <div class="stepnav"><button data-go="6">← Back</button><span></span></div>
+    <div class="card" style="margin-top:14px">
+      <h3>Export your work for your teacher</h3>
+      <p style="font-size:12px;color:var(--text2);margin-bottom:8px">Send one of these files to your teacher. The JSON version can be loaded back into the teacher tool for verification.</p>
+      <div class="row-act">
+        <button class="mini-btn" id="exportJson">Export session (JSON)</button>
+        <button class="mini-btn" id="exportTxt">Export report (Markdown)</button>
+        <button class="mini-btn" id="exportQuestionPack">Export question pack JSON</button>
+        <button class="mini-btn danger" id="clearThis">Clear my saved work for this question</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- hidden teacher artefacts (kept so existing JS selectors still bind) -->
+  <div style="display:none" id="p8">
+    <div id="teachRows"></div>
+    <input id="teachFinal"><textarea id="teachComment"></textarea>
+    <button id="addTeachRow"></button>
+  </div>
+
+</main>
+
+<!-- CUSTOM QUESTION MODAL -->
+<div class="modal-bg" id="customModal">
+  <div class="modal">
+    <h2>Custom question</h2>
+    <div class="modal-sub">Paste your own question and markscheme. The full workflow, rubric, and scoring logic will still apply for the currently selected question family.</div>
+    <label class="field"><span class="lbl">Title / label</span><input class="input" id="cTitle" placeholder="e.g., Paper 1 Nov 2025 Q3c"></label>
+    <label class="field"><span class="lbl">Question text</span><textarea class="ta long" id="cText" placeholder="Paste the full question wording here."></textarea></label>
+    <label class="field"><span class="lbl">Markscheme anchors <small>one per line</small></span><textarea class="ta" id="cAnchors" placeholder="e.g.&#10;Award [1] per identified risk up to 2&#10;Award [1] for development up to 4"></textarea></label>
+    <label class="field"><span class="lbl">Non-negotiables <small>one per line</small></span><textarea class="ta" id="cNonneg" placeholder="e.g.&#10;Must reference Source C&#10;Must explain mechanism"></textarea></label>
+    <div class="modal-close-row">
+      <button id="cClear">Clear custom</button>
+      <button>Cancel</button>
+      <button class="primary" id="cSave">Save custom question</button>
+    </div>
+  </div>
+</div>
+
+<!-- CONFIRM RESET -->
+<div class="modal-bg" id="resetModal">
+  <div class="modal">
+    <h2>Reset this question?</h2>
+    <div class="modal-sub">All brainstorm, response text, annotations, checklist ticks, and teacher notes for the currently selected question will be cleared from this browser.</div>
+    <div class="modal-close-row">
+      <button>Cancel</button>
+      <button class="primary" id="confirmReset" style="background:var(--err);border-color:var(--err);color:#fff">Yes, clear this question</button>
+    </div>
+  </div>
+</div>
+<input type="file" id="jsonImportInput" accept=".json,application/json" style="display:none">
+
+<script>
+/* ============================================================
+   DATA MODEL — Question families, rubric, checklists, exemplars
+   Grounded in:
+   - Markband guidance for all exam papers (Nov 2025)
+   - Specimen Paper 1 & Paper 2 markschemes
+   - Subject report (May 2025)
+   Paper 2 Q1 is treated as 2 marks per project instructions.
+============================================================ */
+
+const STAMP_MEANINGS = {
+  "DEF": "accurate term / definition",
+  "EV":  "evidence / example",
+  "SH":  "stakeholder",
+  "IMP": "implication / so what",
+  "LINK":"explicit link back to the question",
+  "JDG": "judgement",
+  "ARG+":"supporting side of the argument",
+  "ARG-":"counter-side of the argument",
+  "CB":  "balancing / cost–benefit weighing",
+  "SIM": "similarity across sources",
+  "DIFF":"difference across sources",
+  "SRC-C":"reference to Source C",
+  "SRC-D":"reference to Source D"
+};
+
+/* Each family has:
+   paper, marks, label, cmdterms, sampleQ, mscheme, nonneg, testing, cmdFocus, weak, strong,
+   exMind, exCmd, exSrc, exTraps, exPlan,
+   preChecklist, brainFields, postChecklist, stamps, rubric, rubricSrc,
+   exemplarNarrative (step1/3/5 read-only guidance), scoringNotes
+*/
+const FAMILIES = {
+
+"P1-2": {
+  paper:"Paper 1", marks:2, label:"2-mark identify / define / state",
+  cmdterms:["Identify","Define","State","Outline"],
+  sampleQ:{
+    title:"Specimen-style: identify",
+    text:"Identify two characteristics of a recommender system used by a streaming platform.",
+    hint:"Short-answer. Two crisp, distinct points. Do NOT write paragraphs."
+  },
+  mscheme:[
+    "Award [1] per valid distinct point, up to [2].",
+    "OR award [1] for identifying a feature + [1] for a brief development of the same feature.",
+    "Accurate, precise terminology is rewarded; vague restatement is not."
+  ],
+  nonneg:[
+    "Two distinct points — OR one point with a brief development.",
+    "Uses accurate Digital Society / subject-specific terminology.",
+    "Does not drift into explanation, discussion, or evaluation."
+  ],
+  testing:"Basic recall and accurate use of DS terminology. Can the student name two distinct, relevant features?",
+  cmdFocus:"Identify / State / Define = name it. No 'because'. No development beyond the one-clause clarifier.",
+  weak:["Gives one point twice in different words.","Vague phrases like 'it helps people' with no feature named.","Writes a paragraph explaining why it matters — wasted time, no extra marks."],
+  strong:["Names two genuinely different features using precise terms.","Uses correct DS vocabulary (algorithm, data, filtering, etc.) without over-reaching.","Keeps each point to one tight sentence."],
+  exMind:[
+    "Notices the command term first — identify means list and name, not explain.",
+    "Checks the mark value: 2 marks = 2 distinct points (or 1 + development).",
+    "Brainstorms 3–4 candidate features and picks the two most clearly different.",
+    "Uses subject-specific vocabulary on the first attempt."
+  ],
+  exCmd:"Identify / State / Define / Outline are low-stakes command terms. The examiner is checking vocabulary and recall, not reasoning. Two sharp noun-phrases outperform two sentences.",
+  exSrc:"Not source-based in Paper 1 short questions. If a stimulus is referenced, use terminology from it — but do not quote.",
+  exTraps:["Writing a mini-essay.","Two points that are the same idea reworded.","Using everyday words where DS terms exist ('the thing that picks stuff' vs 'content recommendation algorithm')."],
+  exPlan:["Two genuinely different features.","Correct DS vocabulary for each.","A one-sentence structure for each point."],
+  preChecklist:[
+    {id:"p1",text:"I read the command term carefully."},
+    {id:"p2",text:"I have two genuinely different points in mind."},
+    {id:"p3",text:"I know the DS term I will use for each."}
+  ],
+  brainFields:[
+    {id:"point1",label:"Point 1 (short phrase)",ph:"e.g., collaborative filtering algorithm",rows:1},
+    {id:"point2",label:"Point 2 (short phrase) — must be different from Point 1",ph:"e.g., personalised user profile built from watch history",rows:1},
+    {id:"dev",label:"Optional brief clarifier (only if one point)",ph:"If you only have one point, a brief mechanism clarifier can earn [1].",rows:1}
+  ],
+  postChecklist:[
+    {id:"q1",text:"I identified two distinct valid points.",weight:2,cap:null},
+    {id:"q2",text:"I used accurate DS terminology.",weight:1,cap:1},
+    {id:"q3",text:"I avoided vague generalisations and restatement.",weight:1,cap:1},
+    {id:"q4",text:"Each point is clear in one sentence.",weight:1,cap:null}
+  ],
+  stamps:["DEF","EV","LINK"],
+  rubric:[
+    {lvl:"2 marks",m:"2",cls:"top",d:"Two distinct valid points OR one point with a developed clarifier; precise terminology."},
+    {lvl:"1 mark",m:"1",cls:"mid",d:"One valid point, or two points that are not genuinely distinct."},
+    {lvl:"0 marks",m:"0",cls:"low",d:"No valid point, or restatement of the question without DS content."}
+  ],
+  rubricSrc:"Pattern from specimen Paper 1 SL markscheme — [1] per identified point, up to [2]."
+},
+
+"P1-4": {
+  paper:"Paper 1", marks:4, label:"4-mark explain / describe",
+  cmdterms:["Explain","Describe","Outline"],
+  sampleQ:{
+    title:"Specimen-style: explain",
+    text:"Explain two reasons why personal data collected by social media platforms may pose risks to users.",
+    hint:"Two distinct reasons, each developed with a mechanism or consequence. [2] + [2]."
+  },
+  mscheme:[
+    "Award [1] per identified reason / way / risk (up to 2).",
+    "Award [1] per development (mechanism or consequence) of that reason (up to 2).",
+    "Total [4]: pattern is [2] + [2] — two reasons each developed."
+  ],
+  nonneg:[
+    "Two distinct reasons / ways — not one reason twice.",
+    "Each reason is developed with a mechanism (how) OR a consequence (so what).",
+    "Uses accurate DS terminology; avoids vague generic phrasing."
+  ],
+  testing:"Whether the student can give two distinct reasons AND show development — the step up from 'identify'. Listing ≠ explaining.",
+  cmdFocus:"Explain / Describe = identify PLUS develop. The development is the mechanism (how it works) or the consequence (what it leads to).",
+  weak:["Lists two reasons with no development — caps at 2.","Writes the same reason twice using different words.","Gives description instead of explanation (what happens, not why/how)."],
+  strong:["Two distinct reasons, each paired with a clear mechanism-or-consequence.","Uses precise DS vocabulary.","Each point reads as identify → because/therefore/this means → specific consequence."],
+  exMind:[
+    "Reads the command term, then looks for the noun phrase (two reasons / two ways / two risks).",
+    "Brainstorms 3–4 reasons, picks the two most distinct and most developable.",
+    "Plans the development for each before writing: is it mechanism (how) or consequence (so what)?",
+    "Drafts each point as one tight sentence or two short ones."
+  ],
+  exCmd:"Explain / Describe means identify + develop. Development is the difference between 2/4 and 4/4. A mechanism shows how; a consequence shows so-what.",
+  exSrc:"Not source-based, but can reference specific examples (companies, technologies, policies) to anchor the development.",
+  exTraps:["'Listing trap' — two reasons, no development.","'Twin trap' — two reasons that are really the same idea.","Vague scaremongering ('bad things could happen')."],
+  exPlan:["Two distinct reasons.","One development sentence per reason.","Specific DS terms per reason."],
+  preChecklist:[
+    {id:"p1",text:"I have two distinct reasons (not the same idea twice)."},
+    {id:"p2",text:"I have planned a development (mechanism or consequence) for each."},
+    {id:"p3",text:"I know the DS terminology I will use."}
+  ],
+  brainFields:[
+    {id:"point1",label:"Reason / way 1",ph:"Short phrase — what is the risk/reason?",rows:1},
+    {id:"dev1",label:"Development 1 — mechanism (how) or consequence (so what)",ph:"Keywords only — not a finished sentence.",rows:2},
+    {id:"point2",label:"Reason / way 2 (must be distinct from 1)",ph:"Short phrase",rows:1},
+    {id:"dev2",label:"Development 2 — mechanism or consequence",ph:"Keywords only.",rows:2}
+  ],
+  postChecklist:[
+    {id:"q1",text:"I identified two distinct reasons / ways.",weight:2,cap:2},
+    {id:"q2",text:"I developed each reason with a mechanism or consequence.",weight:2,cap:2},
+    {id:"q3",text:"I used accurate DS terminology throughout.",weight:1,cap:null},
+    {id:"q4",text:"I avoided vague / generic points.",weight:1,cap:null}
+  ],
+  stamps:["DEF","EV","IMP","LINK"],
+  rubric:[
+    {lvl:"Top (4)",m:"4",cls:"top",d:"Two distinct reasons, each developed with a clear mechanism or consequence; precise terminology."},
+    {lvl:"Developed (3)",m:"3",cls:"good",d:"Two reasons, one fully developed; or two reasons both briefly developed but with a lapse."},
+    {lvl:"Partial (2)",m:"2",cls:"mid",d:"Two valid but undeveloped points (listing), OR one reason well developed."},
+    {lvl:"Limited (1)",m:"1",cls:"low",d:"One partial point; inconsistent terminology."},
+    {lvl:"No mark (0)",m:"0",cls:"low",d:"No valid point or restatement only."}
+  ],
+  rubricSrc:"Pattern from specimen Paper 1 SL markscheme — [2] + [2]: identify + development for each of two points."
+},
+
+"P1-6": {
+  paper:"Paper 1", marks:6, label:"6-mark analyse",
+  cmdterms:["Analyse","Examine"],
+  sampleQ:{
+    title:"Specimen-style: analyse",
+    text:"Analyse the impact of facial recognition technology on public spaces.",
+    hint:"Go beyond description. Break the impact into causes/consequences. Use at least one specific example; attempt synthesis."
+  },
+  mscheme:[
+    "1–2: specific points identified; lacks direct analysis; description at most.",
+    "3–4: impacts outlined/described; some analysis; reference to an example or similar case.",
+    "5–6: impacts analysed in depth; developed range of points; explicit example reference; attempt at synthesis."
+  ],
+  nonneg:[
+    "Analysis, not description (explain how/why each impact arises, not just what happens).",
+    "A specific example or case reference to ground the analysis.",
+    "A range of developed points (at least 2 analysed in depth, ideally 3).",
+    "Accurate, precise DS terminology used purposefully."
+  ],
+  testing:"Whether the student can decompose an issue into causes and consequences, anchor analysis in an example, and synthesise — rather than merely describe.",
+  cmdFocus:"Analyse = break it down. For each impact: what causes it, how it manifests, who it affects, and why it matters. Ends with synthesis, not a summary.",
+  weak:["Describes the technology instead of analysing impact.","One developed point; rest are listed.","No example — purely abstract.","Vocabulary used imprecisely (e.g., 'data' where 'biometric data' is needed)."],
+  strong:["Each point shows cause → mechanism → consequence.","At least one specific, named example ties the analysis to the real world.","Uses DS terms precisely and purposefully.","Ends with a short synthesis of how the impacts interact."],
+  exMind:[
+    "Maps the issue onto 3Cs (content, context, concept) quickly.",
+    "Picks 2–3 impacts that can be analysed in depth, not 5 that will be listed.",
+    "Chooses a specific example before writing — a case, policy, or platform.",
+    "Plans a synthesis line before writing paragraph 1."
+  ],
+  exCmd:"Analyse is not describe. The exemplar treats each impact as cause → mechanism → consequence → who-is-affected → why-it-matters.",
+  exSrc:"Grounds analysis in a specific real-world example. General statements become specific: 'Clearview AI' not 'facial recognition companies'.",
+  exTraps:["Listing 5 shallow impacts instead of analysing 2–3.","Describing the technology rather than analysing the impact.","Using DS vocabulary as decoration rather than as precision."],
+  exPlan:["2–3 impacts worth analysing.","One specific example.","A synthesis line linking the impacts."],
+  preChecklist:[
+    {id:"p1",text:"I have 2–3 impacts I can analyse (not 5 to list)."},
+    {id:"p2",text:"I have a specific real-world example."},
+    {id:"p3",text:"I have a plan for synthesis at the end."}
+  ],
+  brainFields:[
+    {id:"issue",label:"Central issue / focus",ph:"Short phrase",rows:1},
+    {id:"impact1",label:"Impact 1 — cause → mechanism → consequence",ph:"Keywords for each link of the chain.",rows:3},
+    {id:"impact2",label:"Impact 2 — cause → mechanism → consequence",ph:"Keywords for each link of the chain.",rows:3},
+    {id:"impact3",label:"Impact 3 (optional)",ph:"Keywords",rows:2},
+    {id:"example",label:"Specific real-world example",ph:"Name a case / company / policy / incident.",rows:1},
+    {id:"stakeholders",label:"Stakeholder(s) affected",ph:"Keywords",rows:1},
+    {id:"synthesis",label:"Synthesis line — how impacts connect",ph:"Keywords, not a full sentence.",rows:2}
+  ],
+  postChecklist:[
+    {id:"q1",text:"I analysed (cause → mechanism → consequence), not just described.",weight:2,cap:3},
+    {id:"q2",text:"I developed at least two points in depth.",weight:2,cap:3},
+    {id:"q3",text:"I used a specific real-world example.",weight:1,cap:4},
+    {id:"q4",text:"I named stakeholders.",weight:1,cap:null},
+    {id:"q5",text:"I used accurate DS terminology.",weight:1,cap:null},
+    {id:"q6",text:"I attempted synthesis (connection between points).",weight:1,cap:4}
+  ],
+  stamps:["DEF","EV","SH","IMP","LINK","CB"],
+  rubric:[
+    {lvl:"5–6 (Adequate to In-depth)",m:"5–6",cls:"top",d:"Analysed in depth, developed range of points; explicit example reference; synthesis attempted."},
+    {lvl:"3–4 (Partial)",m:"3–4",cls:"mid",d:"Impacts outlined / described; some analysis; reference to example may be implicit."},
+    {lvl:"1–2 (Limited)",m:"1–2",cls:"low",d:"Specific points identified; lacks analysis; no example."},
+    {lvl:"0",m:"0",cls:"low",d:"No valid analysis."}
+  ],
+  rubricSrc:"Pattern from specimen Paper 1 markscheme and Nov-2025 markband guidance (analyse progression)."
+},
+
+"P1-8": {
+  paper:"Paper 1", marks:8, label:"8-mark discuss / evaluate / to what extent",
+  cmdterms:["Discuss","Evaluate","To what extent"],
+  sampleQ:{
+    title:"Specimen-style: to what extent",
+    text:"To what extent is the use of artificial intelligence in hiring decisions acceptable?",
+    hint:"Evaluative. Both sides, specific evidence, stakeholders, implications, and a conditional judgement."
+  },
+  mscheme:[
+    "1–2 (Limited): list of points; ineffective; no structure; minimal terminology.",
+    "3–4 (Partial): descriptive; at least 2 points described; minimal synthesis; brief / underdeveloped evaluation.",
+    "5–6 (Adequate): analytical, relevant, logical; at least 2 points developed; attempted synthesis; evaluative comments present but inconsistent.",
+    "7–8 (In-depth): evaluative, insightful, coherent; thorough & balanced range of points analysed in depth; effective synthesis; well-developed evaluation; conclusion offers synthesised judgement."
+  ],
+  nonneg:[
+    "Both sides of the argument — supporting AND counter.",
+    "Specific evidence / real-world example.",
+    "Named stakeholder(s).",
+    "Implication (so what?) for society / affected groups.",
+    "Conditional judgement — under what conditions X is / is not acceptable.",
+    "Precise DS terminology throughout."
+  ],
+  testing:"Whether the student can weigh a trade-off, use evidence to support both sides, and reach a CONDITIONAL judgement — not a flat yes/no.",
+  cmdFocus:"Discuss / Evaluate / To what extent = weigh trade-offs, not describe them. The judgement must be conditional (it depends on…) and must follow from the evidence.",
+  weak:["Describes both sides without weighing them.","One side is a full argument; the other is a sentence.","No specific evidence — only general claims.","No judgement, or an unconditional 'yes it is / no it isn't' with no nuance.","Ignores stakeholders or only names 'people'."],
+  strong:["Structures paragraphs with PEEL — Point / Evidence / Explain / Link.","Uses trade-off as the planning engine — what is gained vs what is lost, for whom.","Evidence is specific (named case, policy, example).","Judgement is conditional: 'acceptable when… but not when…'.","Terminology is used precisely and purposefully."],
+  exMind:[
+    "Identifies the trade-off (what is gained vs lost, for whom) before writing.",
+    "Plans one strong ARG+ and one strong ARG- paragraph with evidence and a stakeholder each.",
+    "Plans the judgement AS A CONDITION before the first paragraph is written.",
+    "Chooses a specific example that can support BOTH sides.",
+    "Knows the acceptability threshold — under what conditions does the judgement flip?"
+  ],
+  exCmd:"'To what extent' is a scale question. The answer is rarely 'fully' or 'not at all'. The exemplar anchors the judgement to specific conditions (who, when, with what safeguards).",
+  exSrc:"Not source-based, but the exemplar will reference specific real-world cases (hiring platforms, audits, regulations) to anchor both sides.",
+  exTraps:["Describing both sides instead of weighing them.","Unconditional judgement.","'Evidence' that is actually a generalisation.","Forgetting stakeholders or implications."],
+  exPlan:["The trade-off (gain vs loss).","One strong ARG+ with evidence + stakeholder + implication.","One strong ARG- with evidence + stakeholder + implication.","A conditional judgement."],
+  preChecklist:[
+    {id:"p1",text:"I have identified the trade-off (what is gained vs lost, for whom)."},
+    {id:"p2",text:"I have one strong supporting argument planned."},
+    {id:"p3",text:"I have one strong counter-argument planned."},
+    {id:"p4",text:"I have specific evidence / a real-world example for each side."},
+    {id:"p5",text:"I have named a stakeholder."},
+    {id:"p6",text:"I have a conditional judgement drafted."}
+  ],
+  brainFields:[
+    {id:"issue",label:"Central issue / focus",ph:"Short phrase",rows:1},
+    {id:"tradeoff",label:"Trade-off / dilemma",ph:"What is gained vs what is lost, for whom?",rows:2},
+    {id:"argPlus",label:"ARG+ (supporting side) — Point + Evidence + Explain",ph:"Keywords only.",rows:3},
+    {id:"argMinus",label:"ARG- (counter side) — Point + Evidence + Explain",ph:"Keywords only.",rows:3},
+    {id:"evidence",label:"Specific evidence / real-world example",ph:"Named case / company / policy.",rows:1},
+    {id:"stakeholders",label:"Stakeholder(s)",ph:"Who is affected and how?",rows:1},
+    {id:"implication",label:"Implication (so what?)",ph:"Why does this matter for society / affected groups?",rows:2},
+    {id:"judgement",label:"Conditional judgement — 'acceptable when… but not when…'",ph:"Keywords. Do not write the finished conclusion.",rows:2}
+  ],
+  postChecklist:[
+    {id:"q1",text:"I identified the central issue clearly.",weight:1,cap:null},
+    {id:"q2",text:"I developed a supporting argument (ARG+).",weight:1,cap:null},
+    {id:"q3",text:"I developed a counter-argument (ARG-).",weight:2,cap:6},
+    {id:"q4",text:"I used specific evidence or a real-world example.",weight:2,cap:5},
+    {id:"q5",text:"I named stakeholder(s).",weight:1,cap:null},
+    {id:"q6",text:"I explained the implication (so what?).",weight:1,cap:null},
+    {id:"q7",text:"I used accurate DS terminology throughout.",weight:1,cap:null},
+    {id:"q8",text:"I reached a conditional judgement.",weight:2,cap:6}
+  ],
+  stamps:["DEF","EV","SH","IMP","LINK","JDG","ARG+","ARG-","CB"],
+  rubric:[
+    {lvl:"7–8 (In-depth)",m:"7–8",cls:"top",d:"Evaluative, insightful, coherent. Thorough & balanced range of points analysed in depth; effective synthesis; well-developed evaluation; synthesised conditional judgement."},
+    {lvl:"5–6 (Adequate)",m:"5–6",cls:"good",d:"Analytical, relevant, logical. At least 2 points developed; attempted synthesis; evaluative comments present but inconsistent."},
+    {lvl:"3–4 (Partial)",m:"3–4",cls:"mid",d:"Descriptive, basic. At least 2 points described; minimal synthesis; brief / underdeveloped evaluation."},
+    {lvl:"1–2 (Limited)",m:"1–2",cls:"low",d:"List of points; ineffective; no structure; minimal DS terminology."},
+    {lvl:"0",m:"0",cls:"low",d:"No valid response."}
+  ],
+  rubricSrc:"Markband guidance for all exam papers (Nov 2025) — Paper 1 extended response markbands."
+},
+
+"P2-Q1": {
+  paper:"Paper 2", marks:2, label:"Q1 · 2-mark source-based identify / state",
+  cmdterms:["Identify","State","Outline"],
+  sampleQ:{
+    title:"Specimen-style: Q1 source-based identify",
+    text:"With reference to Source A, identify two features of the digital system described.",
+    hint:"Short-answer. MUST be grounded in Source A. Two distinct points directly supported by the source."
+  },
+  mscheme:[
+    "Award [1] per valid point identified from the source, up to [2].",
+    "OR [1] for one point + [1] for a brief development of that same point.",
+    "Points must be supported by / referenced from the source — not generic knowledge."
+  ],
+  nonneg:[
+    "Source-grounded: each point is traceable back to the source.",
+    "Two distinct points OR one point + brief development.",
+    "Accurate DS terminology."
+  ],
+  testing:"Whether the student can read a source accurately and extract relevant, distinct features using DS vocabulary.",
+  cmdFocus:"Identify / State = pick and name features present in the source. No analysis, no opinion.",
+  weak:["Generic answer not anchored in the source.","Two points that are really the same feature reworded.","Paraphrasing source prose without turning it into a named feature."],
+  strong:["Each point is clearly from the source and named with DS terminology.","The two points are genuinely different.","One-sentence clarity."],
+  exMind:[
+    "Scans the source for concrete features (functions, data, interfaces, processes).",
+    "Picks two genuinely distinct features.",
+    "Turns each feature into a DS-term noun-phrase.",
+    "Double-checks the command verb before writing."
+  ],
+  exCmd:"Identify / State means extract and name, with source grounding. The examiner can trace each point back to a sentence or phrase in the source.",
+  exSrc:"Must cite or draw directly from the source. Do not import unrelated real-world examples.",
+  exTraps:["Importing outside knowledge when the source has two clear features already.","Two features that overlap.","Over-writing — paragraph where a phrase will do."],
+  exPlan:["Two source-grounded features.","DS term for each.","One-sentence structure."],
+  preChecklist:[
+    {id:"p1",text:"I have identified the source I must use."},
+    {id:"p2",text:"I have two genuinely different features from it."},
+    {id:"p3",text:"I know the DS term I will use for each."}
+  ],
+  brainFields:[
+    {id:"point1",label:"Point 1 (short phrase, sourced)",ph:"e.g., automated license-plate recognition at entry gate (from Source A)",rows:1},
+    {id:"point2",label:"Point 2 (distinct from 1, sourced)",ph:"e.g., central database linking vehicle to owner (Source A)",rows:1}
+  ],
+  postChecklist:[
+    {id:"q1",text:"I identified two distinct valid points.",weight:2,cap:null},
+    {id:"q2",text:"Each point is grounded in the source.",weight:2,cap:1},
+    {id:"q3",text:"I used accurate DS terminology.",weight:1,cap:null}
+  ],
+  stamps:["DEF","EV","LINK","SRC-C","SRC-D"],
+  rubric:[
+    {lvl:"2 marks",m:"2",cls:"top",d:"Two distinct source-grounded points OR one point + brief development; precise terminology."},
+    {lvl:"1 mark",m:"1",cls:"mid",d:"One valid source-grounded point; or two points that are not genuinely distinct; or points weakly tied to source."},
+    {lvl:"0",m:"0",cls:"low",d:"No source grounding; no valid point; restates question."}
+  ],
+  rubricSrc:"Specimen Paper 2 markscheme — Q1 treated as 2-mark source-based identify per project instructions."
+},
+
+"P2-Q2": {
+  paper:"Paper 2", marks:4, label:"Q2 · 4-mark explain (source-based mechanism / consequence)",
+  cmdterms:["Explain","Describe","Outline"],
+  sampleQ:{
+    title:"Specimen-style: Q2 source-based explain",
+    text:"With reference to Source B, explain two reasons why the digital system described may create risks for users.",
+    hint:"Two distinct source-grounded risks, each developed with a mechanism or consequence. [2] + [2]."
+  },
+  mscheme:[
+    "Award [1] per identified reason / risk (from or clearly linked to Source B), up to [2].",
+    "Award [1] per development of that reason — mechanism (how) or consequence (so what), up to [2].",
+    "Total [4]: pattern is [2] + [2]."
+  ],
+  nonneg:[
+    "Two distinct reasons / risks — not one repeated.",
+    "Each reason is grounded in the source.",
+    "Each reason is developed with a mechanism OR consequence.",
+    "Accurate DS terminology."
+  ],
+  testing:"Whether the student can extract features from a source AND explain how/why they lead to a named risk or consequence.",
+  cmdFocus:"Explain = identify + develop. Development is mechanism (how it works) or consequence (what it leads to). Stay grounded in the source.",
+  weak:["Lists risks with no explanation — caps at [2].","'Risks' that are not actually in or implied by the source.","Vague scaremongering ('bad things could happen')."],
+  strong:["Two distinct risks from the source, each developed into a mechanism or consequence.","Specific DS terminology used on first pass.","Each point reads as: feature-in-source → how/why it causes risk → named consequence."],
+  exMind:[
+    "Maps source features to distinct risks.",
+    "Picks the two most clearly developable.",
+    "Decides mechanism-or-consequence for each.",
+    "Writes tight — one or two sentences per point."
+  ],
+  exCmd:"Explain means mechanism or consequence on top of identification. The examiner rewards the development line more than a second undeveloped risk.",
+  exSrc:"Source grounding is non-negotiable here. Generic risks that aren't anchored in the source cap low.",
+  exTraps:["Listing, not explaining.","Importing outside risks not supported by the source.","Two 'risks' that are the same idea."],
+  exPlan:["Two source-grounded risks.","One development sentence per risk.","DS terminology."],
+  preChecklist:[
+    {id:"p1",text:"I have two distinct risks from the source."},
+    {id:"p2",text:"I have planned a development for each (mechanism or consequence)."},
+    {id:"p3",text:"Each risk is traceable back to a feature in the source."}
+  ],
+  brainFields:[
+    {id:"risk1",label:"Risk 1 (source-grounded)",ph:"Short phrase. Where in the source is it?",rows:1},
+    {id:"dev1",label:"Development 1 — mechanism or consequence",ph:"Keywords.",rows:2},
+    {id:"risk2",label:"Risk 2 (distinct from 1)",ph:"Short phrase. Where in the source?",rows:1},
+    {id:"dev2",label:"Development 2 — mechanism or consequence",ph:"Keywords.",rows:2}
+  ],
+  postChecklist:[
+    {id:"q1",text:"I identified two distinct risks / reasons.",weight:2,cap:2},
+    {id:"q2",text:"I explained the mechanism or consequence of each.",weight:2,cap:2},
+    {id:"q3",text:"I grounded each in the source.",weight:2,cap:2},
+    {id:"q4",text:"I avoided vague generic points.",weight:1,cap:null}
+  ],
+  stamps:["DEF","EV","IMP","LINK","SRC-C","SRC-D"],
+  rubric:[
+    {lvl:"Top (4)",m:"4",cls:"top",d:"Two distinct source-grounded risks, each developed with mechanism or consequence; precise terminology."},
+    {lvl:"Developed (3)",m:"3",cls:"good",d:"Two risks, one fully developed; or both briefly developed with a lapse in source grounding."},
+    {lvl:"Partial (2)",m:"2",cls:"mid",d:"Two undeveloped points; or one well-developed risk only."},
+    {lvl:"Limited (1)",m:"1",cls:"low",d:"One partial point; weak source grounding."},
+    {lvl:"0",m:"0",cls:"low",d:"No source grounding; no valid point."}
+  ],
+  rubricSrc:"Specimen Paper 2 markscheme — [2] + [2] pattern for 4-mark source-based explain."
+},
+
+"P2-Q3": {
+  paper:"Paper 2", marks:6, label:"Q3 · 6-mark compare and contrast (Sources C & D)",
+  cmdterms:["Compare and contrast","Compare","Contrast"],
+  sampleQ:{
+    title:"Specimen-style: Q3 compare and contrast",
+    text:"Compare and contrast the impacts on citizens described in Source C and Source D.",
+    hint:"Must use BOTH sources. At least one similarity AND one difference. Same-point to same-point comparison. Extend to a broader implication."
+  },
+  mscheme:[
+    "1–2: specific points identified; lacks direct comparison; implicit source reference.",
+    "3–4: impacts outlined / described; comparisons and/or contrasts linked to impacts; reference may be implicit. MAX [3] if only one of similarity/difference addressed.",
+    "5–6: impacts compared AND contrasted; explicit source references; developed in detail with broader implication."
+  ],
+  nonneg:[
+    "Explicit use of BOTH Source C AND Source D.",
+    "At least one similarity AND at least one difference.",
+    "Same-point to same-point comparison (not source-by-source summary).",
+    "Explicit source references, not implicit.",
+    "Moves beyond summary to an implication for citizens / stakeholders."
+  ],
+  testing:"Whether the student can hold two sources side-by-side on the SAME point and find genuine similarity AND genuine difference, then extend.",
+  cmdFocus:"Compare AND contrast means BOTH. Treating sources separately and summarising them one after the other does not compare — it catalogues.",
+  weak:["Summarises Source C, then summarises Source D — no comparison.","Only similarities, or only differences — caps at [3].","Vague overlap ('both mention data') instead of same-point comparison.","Implicit source reference when an explicit one is needed."],
+  strong:["Integrates both sources within each point.","Each point is same-point-to-same-point: 'Both C and D describe X, but C frames it as Y while D frames it as Z'.","At least one similarity AND at least one difference, each developed.","Extends to a broader implication for citizens / stakeholders."],
+  exMind:[
+    "Reads both sources with the comparison already in mind.",
+    "Identifies 2–3 candidate shared points across C and D.",
+    "Picks one point where they agree and one where they diverge.",
+    "Plans each paragraph as 'On point X: C says… D says… similar because… different because…'.",
+    "Ends with the broader implication — what this comparison means for the citizens / stakeholders in both sources."
+  ],
+  exCmd:"Compare and contrast is an integration task. The exemplar never drifts into two parallel summaries.",
+  exSrc:"Both C AND D must be explicitly referenced. The exemplar uses 'Source C states…' and 'Source D states…' or equivalent.",
+  exTraps:["Source-by-source summary.","Only similarity or only difference (caps at 3).","Implicit references.","Finishing without an implication."],
+  exPlan:["One similarity (same-point).","One difference (same-point).","Explicit C and D references.","A broader implication."],
+  preChecklist:[
+    {id:"p1",text:"I have identified at least one similarity across C and D."},
+    {id:"p2",text:"I have identified at least one difference across C and D."},
+    {id:"p3",text:"I will reference BOTH sources explicitly."},
+    {id:"p4",text:"I have a broader implication planned."}
+  ],
+  brainFields:[
+    {id:"similarity",label:"Similarity (same-point across C and D)",ph:"On what point do the sources agree?",rows:2},
+    {id:"difference",label:"Difference (same-point across C and D)",ph:"On what point do they diverge?",rows:2},
+    {id:"srcC",label:"Source C evidence / phrase",ph:"Short phrase or paraphrase",rows:2},
+    {id:"srcD",label:"Source D evidence / phrase",ph:"Short phrase or paraphrase",rows:2},
+    {id:"implication",label:"Broader implication for citizens / stakeholders",ph:"Keywords only.",rows:2}
+  ],
+  postChecklist:[
+    {id:"q1",text:"I explicitly used BOTH Source C and Source D.",weight:2,cap:2},
+    {id:"q2",text:"I identified at least one similarity.",weight:1,cap:3},
+    {id:"q3",text:"I identified at least one difference.",weight:1,cap:3},
+    {id:"q4",text:"I compared same-point to same-point (not source-by-source summary).",weight:2,cap:4},
+    {id:"q5",text:"I used specific evidence from both sources.",weight:1,cap:4},
+    {id:"q6",text:"I moved beyond summary.",weight:1,cap:4},
+    {id:"q7",text:"I extended to a broader implication for citizens / stakeholders.",weight:1,cap:5}
+  ],
+  stamps:["DEF","EV","SH","IMP","LINK","SIM","DIFF","SRC-C","SRC-D"],
+  rubric:[
+    {lvl:"5–6 (Full)",m:"5–6",cls:"top",d:"Impacts compared AND contrasted; explicit source references to C and D; developed in detail; broader implication present."},
+    {lvl:"3–4 (Partial)",m:"3–4",cls:"mid",d:"Impacts outlined / described; some comparison or contrast linked to impacts; reference may be implicit. MAX 3 if only one of similarity/difference addressed."},
+    {lvl:"1–2 (Limited)",m:"1–2",cls:"low",d:"Specific points identified; lacks direct comparison; implicit or missing source reference."},
+    {lvl:"0",m:"0",cls:"low",d:"No valid response."}
+  ],
+  rubricSrc:"Specimen Paper 2 markscheme Q3 — compare and contrast markband including the MAX-[3] cap when only one side addressed."
+},
+
+"P2-Q4": {
+  paper:"Paper 2", marks:12, label:"Q4 · 12-mark extended discussion (sources + own knowledge)",
+  cmdterms:["Discuss","To what extent","Evaluate"],
+  sampleQ:{
+    title:"Specimen-style: Q4 extended response",
+    text:"Using the sources and your own knowledge, discuss the advantages and disadvantages of [topic].",
+    hint:"Integrate 3+ sources AND relevant own knowledge consistently across the response. Both sides. Conditional judgement."
+  },
+  mscheme:[
+    "1–3 (Limited): limited understanding; limited relevant knowledge; evidence NOT integrated; limited organisation.",
+    "4–6 (Some): some understanding; knowledge demonstrated but not always relevant/accurate; evidence PARTIALLY integrated; partially organised.",
+    "7–9 (Adequate): adequate understanding; relevant & accurate knowledge (some lapses); ADEQUATE integration of evidence (not always sustained); adequately organised.",
+    "10–12 (In-depth): in-depth understanding; relevant & accurate knowledge throughout; CONSISTENT & EFFECTIVE integration of evidence from 3+ sources INCLUDING own knowledge; well-structured & effectively organised; synthesised conditional judgement."
+  ],
+  nonneg:[
+    "Evidence from THREE OR MORE sources.",
+    "Relevant OWN KNOWLEDGE integrated in addition to sources.",
+    "Integration across the response — not source-by-source.",
+    "Both advantages AND disadvantages.",
+    "A conditional judgement / extent response in the conclusion.",
+    "Accurate, precise DS terminology used purposefully throughout."
+  ],
+  testing:"Whether the student can sustain integration of multiple sources + own knowledge across an extended response, weigh a trade-off, and reach a conditional judgement.",
+  cmdFocus:"Discuss / To what extent = integrate, weigh, and judge — not list advantages then list disadvantages with sources pasted in.",
+  weak:["Source-by-source structure instead of integrated argument.","Fewer than 3 sources — caps around 6.","No own knowledge — caps at adequate band.","Descriptive, not evaluative.","Unconditional 'yes/no' judgement or none at all."],
+  strong:["Integrates 3+ sources AND own knowledge within each paragraph.","Uses PEEL paragraphs underpinned by a trade-off.","Both sides developed; specific stakeholders; explicit implications.","Conditional judgement grounded in the evidence — 'under X conditions…'.","DS terminology used precisely and consistently."],
+  exMind:[
+    "Maps the trade-off first: what is gained vs lost, for whom.",
+    "Plans 3–4 integrated paragraphs, each anchored to a point and pulling from 2–3 sources PLUS own knowledge.",
+    "Decides which side of the trade-off each paragraph belongs to.",
+    "Plans a conditional judgement BEFORE writing the introduction.",
+    "Keeps a running list of sources used — must be 3+."
+  ],
+  exCmd:"The 10–12 band hinges on CONSISTENT & EFFECTIVE integration. Quoting each source once in a box does not qualify — sources must be woven into the argument.",
+  exSrc:"3+ sources + relevant own knowledge. The exemplar cross-references sources ('as Source A shows… Source C extends this by…') and adds a named real-world example beyond the booklet.",
+  exTraps:["Source-by-source structure.","Only 2 sources.","No own knowledge.","Descriptive summary of sources without argument.","Unconditional judgement."],
+  exPlan:["Trade-off line.","3–4 integrated points, each with 2+ sources + own knowledge.","A conditional judgement.","Specific DS terminology."],
+  preChecklist:[
+    {id:"p1",text:"I have identified the trade-off."},
+    {id:"p2",text:"I have planned 3–4 integrated points (not source-by-source)."},
+    {id:"p3",text:"I have identified 3+ sources I will use."},
+    {id:"p4",text:"I have at least one piece of own knowledge (example / case)."},
+    {id:"p5",text:"I have a conditional judgement drafted."}
+  ],
+  brainFields:[
+    {id:"issue",label:"Central issue",ph:"Short phrase",rows:1},
+    {id:"tradeoff",label:"Trade-off",ph:"Gained vs lost, for whom.",rows:2},
+    {id:"point1",label:"Integrated point 1 — which sources + own knowledge support it?",ph:"Keywords. List sources used.",rows:3},
+    {id:"point2",label:"Integrated point 2",ph:"Keywords + sources.",rows:3},
+    {id:"point3",label:"Integrated point 3",ph:"Keywords + sources.",rows:3},
+    {id:"ownKnowledge",label:"Own knowledge — specific case / example beyond the booklet",ph:"Name the case / policy / incident.",rows:2},
+    {id:"stakeholders",label:"Stakeholder(s)",ph:"Keywords",rows:1},
+    {id:"implication",label:"Implication (so what?)",ph:"Keywords",rows:2},
+    {id:"judgement",label:"Conditional judgement",ph:"Under what conditions is the claim supported vs not?",rows:2},
+    {id:"sourcesUsed",label:"Sources I intend to use (list)",ph:"e.g., A, B, C, D — aim for 3+",rows:1}
+  ],
+  postChecklist:[
+    {id:"q1",text:"I used evidence from 3 or more sources.",weight:3,cap:9},
+    {id:"q2",text:"I integrated relevant own knowledge beyond the sources.",weight:2,cap:9},
+    {id:"q3",text:"I integrated sources across the response (not source-by-source).",weight:3,cap:6},
+    {id:"q4",text:"I developed both advantages AND disadvantages.",weight:2,cap:9},
+    {id:"q5",text:"I used specific evidence / named examples.",weight:2,cap:7},
+    {id:"q6",text:"I named stakeholder(s).",weight:1,cap:null},
+    {id:"q7",text:"I explained implications for society / affected groups.",weight:1,cap:null},
+    {id:"q8",text:"I used accurate DS terminology throughout.",weight:1,cap:null},
+    {id:"q9",text:"I reached a conditional judgement.",weight:2,cap:9},
+    {id:"q10",text:"The response is well-structured and coherent.",weight:1,cap:null}
+  ],
+  stamps:["DEF","EV","SH","IMP","LINK","JDG","ARG+","ARG-","CB","SRC-C","SRC-D"],
+  rubric:[
+    {lvl:"10–12 (In-depth)",m:"10–12",cls:"top",d:"In-depth understanding; relevant & accurate knowledge throughout; CONSISTENT & EFFECTIVE integration of evidence from 3+ sources including own knowledge; well-structured; synthesised conditional judgement."},
+    {lvl:"7–9 (Adequate)",m:"7–9",cls:"good",d:"Adequate understanding; relevant & accurate knowledge with some lapses; adequate integration (not always sustained); 3+ sources adequately integrated; some own knowledge."},
+    {lvl:"4–6 (Some)",m:"4–6",cls:"mid",d:"Some understanding; knowledge inconsistently relevant/accurate; evidence partially integrated; each source used separately."},
+    {lvl:"1–3 (Limited)",m:"1–3",cls:"low",d:"Limited understanding; limited knowledge; evidence not integrated; limited organisation."},
+    {lvl:"0",m:"0",cls:"low",d:"No valid response."}
+  ],
+  rubricSrc:"Markband guidance for all exam papers (Nov 2025) — Paper 2 Q4 12-mark markband; 3+ sources + own knowledge required for top band."
+}
+
+};
+
+/* ============================================================
+   EXEMPLAR NARRATIVES — read-only guidance panels that appear
+   at key steps when Exemplar Mode is on.
+   These SHOW the thinking; they never pre-fill the student's fields.
+============================================================ */
+const EXEMPLAR_NARRATIVES = {
+"P1-2":{
+  step1:"<h4>What the exemplar notices first</h4><p><strong>Command term:</strong> the exemplar circles the verb. <em>Identify</em> is a recall task — two crisp noun-phrases, not a paragraph.</p><p><strong>Mark value:</strong> 2 marks = 2 distinct points (or 1 point + a one-clause clarifier).</p><p><strong>Do not drift</strong> into explanation or evaluation — wasted time, no extra marks.</p>",
+  step3:"<h4>How the exemplar brainstorms</h4><ul><li>Lists 3–4 candidate features in fragments.</li><li>Picks the two that are <strong>genuinely different</strong> (not the same idea reworded).</li><li>Writes the DS term next to each (e.g., <em>collaborative filtering</em>, <em>implicit feedback</em>).</li></ul>",
+  step5:"<h4>Where the exemplar's annotations would land</h4><ul><li><strong>DEF × 2</strong> — one for each named feature using precise DS vocabulary.</li><li><strong>LINK</strong> — implicit; each point answers the exact verb of the question.</li></ul><p>No EV, SH, IMP needed — this question does not ask for them.</p>"
+},
+"P1-4":{
+  step1:"<h4>What the exemplar notices first</h4><p><strong>Command term:</strong> <em>Explain</em> = identify + develop. The development (mechanism or consequence) is where the 3rd and 4th marks live.</p><p><strong>[2] + [2] pattern:</strong> two reasons, each developed.</p>",
+  step3:"<h4>How the exemplar brainstorms</h4><ul><li>Lists 3–4 reasons, picks the two most <strong>distinct and developable</strong>.</li><li>For each reason, decides in advance: mechanism (how) OR consequence (so what).</li><li>Keeps brainstorm in <strong>fragments</strong>, not finished sentences.</li></ul>",
+  step5:"<h4>Where annotations would land</h4><ul><li><strong>DEF × 2</strong> at the terms.</li><li><strong>IMP × 2</strong> at the development (mechanism or consequence).</li><li><strong>LINK</strong> at the clause that answers the question directly.</li></ul>"
+},
+"P1-6":{
+  step1:"<h4>What the exemplar notices first</h4><p><strong>Command term:</strong> <em>Analyse</em> — decompose into causes / mechanisms / consequences. Description caps at 4.</p><p><strong>Strategy:</strong> 2–3 impacts analysed in depth &gt; 5 impacts listed.</p>",
+  step3:"<h4>How the exemplar brainstorms</h4><ul><li>Picks 2–3 impacts — no more.</li><li>For each: plans cause → mechanism → consequence <strong>as fragments</strong>.</li><li>Anchors with a specific named example (not a generic category).</li><li>Plans a one-line synthesis before writing.</li></ul>",
+  step5:"<h4>Where annotations would land</h4><ul><li><strong>DEF</strong> at DS terms used precisely.</li><li><strong>EV</strong> at the specific example.</li><li><strong>SH</strong> at the stakeholder(s).</li><li><strong>IMP</strong> at the 'so what' line.</li><li><strong>CB</strong> at the synthesis (how impacts interact).</li></ul>"
+},
+"P1-8":{
+  step1:"<h4>What the exemplar notices first</h4><p><strong>Command term:</strong> <em>To what extent / Discuss / Evaluate</em> — a scale question. A flat yes/no caps mid-band.</p><p><strong>Planning engine:</strong> <em>Trade-off</em> (what is gained vs lost, for whom). <strong>Paragraph engine:</strong> PEEL.</p><p>Top band requires both sides + evidence + stakeholder + implication + conditional judgement.</p>",
+  step3:"<h4>How the exemplar brainstorms</h4><ul><li>Writes the trade-off line first.</li><li>Plans ONE strong ARG+ paragraph and ONE strong ARG- paragraph — not four half-paragraphs.</li><li>Chooses a specific named example that can support <strong>both</strong> sides.</li><li>Drafts the conditional judgement <em>before</em> writing the introduction.</li></ul>",
+  step5:"<h4>Where annotations would land</h4><ul><li><strong>ARG+</strong> and <strong>ARG-</strong> at the topic sentences of the two paragraphs.</li><li><strong>EV</strong> at the specific example.</li><li><strong>SH</strong> at the stakeholder(s).</li><li><strong>IMP</strong> at the 'so what' line in each side.</li><li><strong>CB</strong> at balancing language ('on one hand… on the other…').</li><li><strong>JDG</strong> at the conditional judgement.</li><li><strong>LINK</strong> where the answer explicitly returns to the question.</li></ul><p class='hint' style='color:var(--teal);margin-top:8px'><strong>Why top-band, not mid-band?</strong> The exemplar's JDG is conditional, the EV is specific, and CB shows weighing — not just listing.</p>"
+},
+"P2-Q1":{
+  step1:"<h4>What the exemplar notices first</h4><p><strong>Source grounding is non-negotiable.</strong> Each point must be traceable to the named source.</p><p><strong>2 marks</strong> = 2 source-grounded points OR 1 point + development.</p>",
+  step3:"<h4>How the exemplar brainstorms</h4><ul><li>Scans the source for concrete features (functions, data flows, interfaces).</li><li>Picks two genuinely distinct features.</li><li>Turns each into a DS-term noun-phrase.</li></ul>",
+  step5:"<h4>Where annotations would land</h4><ul><li><strong>DEF × 2</strong> at the named features with DS terminology.</li><li><strong>SRC-C</strong> or <strong>SRC-D</strong> (or the named source) at the source reference.</li><li><strong>LINK</strong> — implicit; each answer addresses the verb.</li></ul>"
+},
+"P2-Q2":{
+  step1:"<h4>What the exemplar notices first</h4><p><strong>Explain + source-grounded.</strong> Each risk/reason must be <em>in or clearly implied by</em> the source.</p><p><strong>[2] + [2]:</strong> two risks, each developed with mechanism or consequence.</p>",
+  step3:"<h4>How the exemplar brainstorms</h4><ul><li>Maps source features to distinct risks.</li><li>For each risk, plans: where-in-source → mechanism OR consequence.</li><li>Keeps outside examples OUT unless they reinforce the source.</li></ul>",
+  step5:"<h4>Where annotations would land</h4><ul><li><strong>SRC-C / SRC-D</strong> at the source grounding.</li><li><strong>DEF</strong> at precise DS terms.</li><li><strong>IMP × 2</strong> at each development (mechanism/consequence).</li></ul>"
+},
+"P2-Q3":{
+  step1:"<h4>What the exemplar notices first</h4><p><strong>Compare AND Contrast.</strong> Only similarities OR only differences caps at 3.</p><p><strong>Same-point comparison</strong> — not source-by-source summary.</p><p>Both <strong>Source C AND Source D</strong> must be explicitly referenced.</p>",
+  step3:"<h4>How the exemplar brainstorms</h4><ul><li>Reads both sources with the comparison already in mind.</li><li>Finds 2–3 candidate shared <em>points</em> (not themes) and picks: one similarity + one difference.</li><li>Plans each paragraph as: <em>'On point X: C says… D says… similar because… different because…'</em></li><li>Plans a broader implication for citizens / stakeholders.</li></ul>",
+  step5:"<h4>Where annotations would land</h4><ul><li><strong>SIM</strong> at the similarity.</li><li><strong>DIFF</strong> at the difference.</li><li><strong>SRC-C</strong> and <strong>SRC-D</strong> inside the same paragraph — integrated, not catalogued.</li><li><strong>EV</strong> at source evidence.</li><li><strong>IMP</strong> at the broader-implication line.</li></ul><p class='hint' style='color:var(--teal);margin-top:8px'><strong>Why top-band, not mid-band?</strong> Integration within each point + both sim/diff + explicit refs + extension to implication.</p>"
+},
+"P2-Q4":{
+  step1:"<h4>What the exemplar notices first</h4><p><strong>3+ sources AND own knowledge.</strong> Fewer than 3 sources caps around 6; no own knowledge caps at adequate.</p><p><strong>Integration</strong> is the key 10–12 band requirement — sources must be <em>woven into</em> the argument, not listed.</p><p><strong>Trade-off</strong> is still the planning engine; PEEL is the paragraph engine.</p>",
+  step3:"<h4>How the exemplar brainstorms</h4><ul><li>Writes the trade-off line first.</li><li>Plans 3–4 integrated points — each pulling from 2+ sources PLUS own knowledge.</li><li>Keeps a running list of sources to ensure 3+.</li><li>Plans the conditional judgement before writing paragraph 1.</li><li>Picks at least one specific named real-world case beyond the booklet.</li></ul>",
+  step5:"<h4>Where annotations would land</h4><ul><li><strong>ARG+</strong> / <strong>ARG-</strong> at topic sentences.</li><li><strong>SRC-C</strong>, <strong>SRC-D</strong> inside paragraphs — cross-referenced, not catalogued.</li><li><strong>EV</strong> at own-knowledge example(s).</li><li><strong>SH</strong> at named stakeholders.</li><li><strong>IMP</strong> at each 'so what' line.</li><li><strong>CB</strong> at balancing language.</li><li><strong>JDG</strong> at the conditional judgement.</li></ul><p class='hint' style='color:var(--teal);margin-top:8px'><strong>Why 10–12, not 7–9?</strong> Consistent integration across the whole response + own knowledge throughout + synthesised conditional judgement — not merely 'adequate with lapses'.</p>"
+}
+};
+
+
+/* ============================================================
+   DEMO PACK + JSON QUESTION PACK SUPPORT
+============================================================ */
+const DEMO_PACK = {
+  family: "P1-8",
+  customQuestion: {
+    title: "Instagram and social identity formation — Q4 [8]",
+    text: `Instagram and social identity formation
+Instagram is a global social media platform used by over one billion people to share images, short videos, and personal updates. Features such as Stories, Reels, and algorithmically curated feeds encourage users to construct and display their online identity through visual content, hashtags, and follower networks. The platform collects large volumes of behavioural data, including likes, viewing time, and interactions, which are processed by recommendation algorithms to prioritise certain content and creators.
+Influencers and brands use these systems to shape trends in fashion, beauty, and lifestyle, reinforcing particular standards of success and attractiveness. This gives Instagram significant cultural power in defining what is visible and valued in digital space. At the same time, users form communities around shared interests, gender identities, and social causes, using the platform as a space of digital expression.
+Critics argue that Instagram contributes to anxiety, body image concerns, and social comparison, especially among young people. Others highlight its role in enabling marginalised voices and supporting identity exploration. This case study illustrates how digital systems influence personal identity, social relationships, and inequality in contemporary digital society.
+
+4. Evaluate how Instagram influences social class distinctions and perceptions of wealth. [8]`,
+    anchors: [
+      "Award up to 8 marks.",
+      "This question is assessed using markbands and requires evaluation.",
+      "High-quality responses will refer explicitly to the case study.",
+      "High-quality responses will present arguments for and against Instagram’s impact.",
+      "High-quality responses will consider visibility, inequality, and platform design.",
+      "Reach a clear, justified conclusion.",
+      "Arguments for may include opportunities for social mobility through influencing, access to luxury culture without ownership, and entrepreneurship via branding.",
+      "Arguments against may include normalization of extreme wealth, increased social comparison, marginalization of lower-income users, and algorithmic amplification of elite lifestyles."
+    ],
+    nonneg: [
+      "Refer explicitly to the Instagram case study.",
+      "Use both benefits and drawbacks, not one-sided description.",
+      "Link social class to access to resources, prestige, and visibility.",
+      "Address how algorithms and influencer culture shape what is seen as success.",
+      "Name at least one stakeholder directly.",
+      "End with a justified judgement, not a summary."
+    ]
+  },
+  seedData: {
+    _seed: "instagram_demo_v1",
+    pre: {p1:true,p2:true,p3:true,p4:true,p5:true,p6:true},
+    brain: {
+      issue: "Instagram shapes class identity by turning wealth into something visible, desirable, and measurable through followers, aesthetics, and engagement.",
+      tradeoff: "Access vs inequality. Instagram can give some users access to audiences, branding, and limited upward mobility, but the same platform amplifies already-wealthy lifestyles and makes exclusion more visible.",
+      argPlus: "ARG+ → Influencing / branding can create entrepreneurship and limited social mobility. Evidence → ordinary users can build audiences without traditional gatekeepers. Explain → visibility can become cultural/social capital and even income.",
+      argMinus: "ARG- → Algorithms and polished influencer content privilege affluent lifestyles. Evidence → high-engagement, high-production posts about travel, fashion, beauty. Explain → lower-income users compare themselves to curated wealth and feel excluded; class hierarchy is reproduced.",
+      evidence: "Use case-study evidence: Stories, Reels, curated feeds, influencers and brands shaping trends. Add Week 2 bank example: influencer culture = visibility becomes more democratic, but authenticity and commercial persuasion blur together.",
+      stakeholders: "Lower-income users; influencers/content creators; advertisers/brands; young people using Instagram to measure status and belonging.",
+      implication: "Perception of wealth becomes performative. Success is judged visually, not just economically. The platform can normalize elite lifestyles and reshape what users think is 'normal' or 'successful'.",
+      judgement: "To a limited extent Instagram can widen opportunity, but to a greater extent it reinforces class hierarchy because algorithmic visibility and commercial culture privilege wealthier, already-visible users."
+    },
+    response: `Instagram significantly influences social class distinctions and perceptions of wealth because, in digital society, social class is tied to access to resources and prestige. As the case study notes, influencers and brands use Stories, Reels and curated feeds to promote fashion, beauty and lifestyle content, which frames luxury consumption as a visible marker of success. This can create some positive opportunities: users from less privileged backgrounds may use Instagram to build personal brands, attract sponsorships and gain limited upward mobility through content creation. This mirrors influencer culture more broadly, where ordinary users can reach audiences once controlled by traditional media.
+
+However, these opportunities are unevenly distributed. Algorithms promote content that generates high engagement, and this often favours polished posts from already wealthy creators or brands with money for travel, styling and production. Instagram therefore does not simply reflect class differences; it amplifies them by making affluent lifestyles more visible and more desirable. Lower-income users may compare themselves to unrealistic standards of beauty, travel and consumption, which can reinforce exclusion and weaken their sense of belonging. This shows the trade-off between access and inequality: the platform gives broader visibility, but the benefits of that visibility are not shared equally.
+
+Instagram also shapes wealth as something performative. Designer items, aesthetic homes and luxury trips become part of an online identity, even when the image is heavily curated or commercially sponsored. As a result, wealth is often perceived less as economic reality and more as a visual standard that users are expected to imitate. Overall, Instagram can support limited social mobility for some users, but to a greater extent it reinforces class hierarchy by privileging already visible and affluent lifestyles. Therefore, its influence on perceptions of wealth is more unequal than empowering.`,
+    emap: [
+      {stamp:"DEF",quote:"social class is tied to access to resources and prestige",note:"Defines social class using course language instead of vague wording."},
+      {stamp:"ARG+",quote:"users from less privileged backgrounds may use Instagram to build personal brands, attract sponsorships and gain limited upward mobility",note:"Developed supporting argument showing a possible benefit."},
+      {stamp:"EV",quote:"This mirrors influencer culture more broadly, where ordinary users can reach audiences once controlled by traditional media",note:"Uses a real-world supporting example from the review bank."},
+      {stamp:"ARG-",quote:"Algorithms promote content that generates high engagement, and this often favours polished posts from already wealthy creators or brands",note:"Developed counter-argument linked to platform design."},
+      {stamp:"SH",quote:"Lower-income users may compare themselves to unrealistic standards",note:"Names a stakeholder directly rather than saying 'people'."},
+      {stamp:"IMP",quote:"This shows the trade-off between access and inequality",note:"Explains the broader implication and links to the trade-off bank."},
+      {stamp:"CB",quote:"Instagram can support limited social mobility for some users, but to a greater extent it reinforces class hierarchy",note:"Shows balancing / weighing of both sides before judgement."},
+      {stamp:"JDG",quote:"its influence on perceptions of wealth is more unequal than empowering",note:"Clear overall judgement that answers the evaluative command term."},
+      {stamp:"LINK",quote:"Instagram significantly influences social class distinctions and perceptions of wealth",note:"Explicitly links back to the wording of the question."}
+    ],
+    post: {q1:true,q2:true,q3:true,q4:true,q5:true,q6:true,q7:true,q8:true}
+  }
+};
+
+function deepClone(obj){ return JSON.parse(JSON.stringify(obj)); }
+
+function normalizeImportedPack(obj){
+  if(!obj || typeof obj !== 'object') throw new Error('The JSON file is empty or invalid.');
+  const family = obj.family || obj.familyKey || obj.questionFamily || state.famKey || 'P1-8';
+  const q = obj.customQuestion || obj.custom || obj.question || null;
+  const custom = q ? {
+    title: q.title || obj.title || 'Imported question',
+    text: q.text || q.questionText || obj.text || obj.questionText || '',
+    anchors: Array.isArray(q.anchors) ? q.anchors : Array.isArray(q.markscheme) ? q.markscheme : Array.isArray(obj.anchors) ? obj.anchors : Array.isArray(obj.markscheme) ? obj.markscheme : [],
+    nonneg: Array.isArray(q.nonneg) ? q.nonneg : Array.isArray(q.nonNegotiables) ? q.nonNegotiables : Array.isArray(obj.nonneg) ? obj.nonneg : Array.isArray(obj.nonNegotiables) ? obj.nonNegotiables : []
+  } : null;
+  if(custom && !custom.text) throw new Error('Imported JSON needs question text in customQuestion.text (or equivalent).');
+  const data = obj.data || obj.seedData || {};
+  return {family, custom, data};
+}
+
+function applyPack(pack,{step=1,seed=false}={}){
+  const normalized = normalizeImportedPack(pack);
+  state.famKey = normalized.family || 'P1-8';
+  state.custom = normalized.custom || null;
+  if(state.custom){
+    localStorage.setItem(LS_CUSTOM+state.famKey, JSON.stringify(state.custom));
+  } else {
+    localStorage.removeItem(LS_CUSTOM+state.famKey);
+  }
+  state.data = normalized.data ? deepClone(normalized.data) : {};
+  state.step = step;
+  if(seed){ localStorage.setItem(LS_PREFIX+'demoSeeded','1'); }
+  saveState();
+  renderAll();
+}
+
+function buildQuestionPack(){
+  return {
+    schema: 'ib-digsoc-question-pack-v1',
+    family: state.famKey,
+    customQuestion: state.custom ? deepClone(state.custom) : {
+      title: activeQuestion().title || 'Current question',
+      text: activeQuestion().text || '',
+      anchors: deepClone(activeMScheme()),
+      nonneg: deepClone(activeNonneg())
+    },
+    data: deepClone(state.data)
+  };
+}
+
+function isDemoPackActive(){
+  return state.data && state.data._seed === 'instagram_demo_v1';
+}
+
+function isBlankStudio(){
+  const hasCustom = !!(state.custom && (state.custom.text || '').trim());
+  const hasData = !!(state.data && Object.keys(state.data).some(k => {
+    if(k === '_seed') return false;
+    const v = state.data[k];
+    if(v == null) return false;
+    if(typeof v === 'string') return v.trim().length > 0;
+    if(Array.isArray(v)) return v.length > 0;
+    if(typeof v === 'object') return Object.keys(v).length > 0;
+    return true;
+  }));
+  return !hasCustom && !hasData;
+}
+
+function blankQuestion(){
+  return {
+    title: "No question loaded",
+    text: "",
+    hint: "Use Custom Question, Import JSON, or Load Worked Example."
+  };
+}
+
+function renderDemoNotice(){
+  const notice = document.getElementById('demoNotice');
+  if(notice) notice.style.display = isDemoPackActive() ? 'block' : 'none';
+  const blank = document.getElementById('blankNotice');
+  if(blank) blank.style.display = isBlankStudio() ? 'block' : 'none';
+}
+/* ============================================================
+   APP STATE & STORAGE
+============================================================ */
+const LS_PREFIX = "ib_digsoc_studio_v2_blank::student::";
+const LS_EX = LS_PREFIX+"exemplarMode";
+const LS_LAST = LS_PREFIX+"lastFamily";
+const LS_CUSTOM = LS_PREFIX+"custom::";
+let state = {
+  famKey: null,
+  step: 1,
+  exemplar: false,
+  custom: null, // {title, text, anchors[], nonneg[]}
+  data: {} // keyed session data
+};
+function stateKey(){
+  const custom = state.custom ? "::custom" : "";
+  return LS_PREFIX+"data::"+state.famKey+custom;
+}
+function loadState(){
+  // restore last family
+  state.famKey = localStorage.getItem(LS_LAST) || "P1-8";
+  state.exemplar = localStorage.getItem(LS_EX) === "1";
+  const c = localStorage.getItem(LS_CUSTOM+state.famKey);
+  state.custom = c ? JSON.parse(c) : null;
+  const d = localStorage.getItem(stateKey());
+  state.data = d ? JSON.parse(d) : {};
+}
+function saveState(){
+  localStorage.setItem(LS_LAST, state.famKey);
+  localStorage.setItem(LS_EX, state.exemplar?"1":"0");
+  if(state.custom){
+    localStorage.setItem(LS_CUSTOM+state.famKey, JSON.stringify(state.custom));
+  }
+  localStorage.setItem(stateKey(), JSON.stringify(state.data));
+  flashSaved();
+}
+let saveTmr=null;
+function queueSave(){ clearTimeout(saveTmr); saveTmr=setTimeout(saveState,250); }
+function flashSaved(){
+  const el=document.getElementById("saveind");
+  el.innerHTML='<span class="save-dot"></span>saved just now';
+  clearTimeout(el._t);
+  el._t=setTimeout(()=>el.innerHTML='<span class="save-dot"></span>autosaved',1800);
+}
+
+/* ============================================================
+   HELPERS
+============================================================ */
+const $  = s => document.querySelector(s);
+const $$ = s => document.querySelectorAll(s);
+const esc= s => (s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+function el(tag, attrs={}, html){
+  const e=document.createElement(tag);
+  for(const k in attrs){
+    if(k==="class")e.className=attrs[k];
+    else if(k==="text")e.textContent=attrs[k];
+    else e.setAttribute(k,attrs[k]);
+  }
+  if(html!==undefined)e.innerHTML=html;
+  return e;
+}
+function wordCount(s){ return (s||"").trim().split(/\s+/).filter(Boolean).length; }
+function fam(){ return FAMILIES[state.famKey]; }
+function activeQuestion(){
+  if(state.custom && (state.custom.text || '').trim()){
+    return {
+      title: state.custom.title || "Custom question",
+      text: state.custom.text || "",
+      hint: "Custom question — same workflow and rubric for this family applies."
+    };
+  }
+  if(isBlankStudio()) return blankQuestion();
+  return fam().sampleQ;
+}
+function activeMScheme(){
+  if(state.custom && state.custom.anchors && state.custom.anchors.length){
+    return state.custom.anchors;
+  }
+  if(isBlankStudio()){
+    return [
+      "Choose a question first.",
+      "Then load it with Custom Question or Import JSON.",
+      "The workflow, checklist, and scoring will update automatically based on the selected family."
+    ];
+  }
+  return fam().mscheme;
+}
+function activeNonneg(){
+  if(state.custom && state.custom.nonneg && state.custom.nonneg.length){
+    return state.custom.nonneg;
+  }
+  if(isBlankStudio()){
+    return [
+      "Select or import a question before planning.",
+      "Check that the question family matches the command term and mark value.",
+      "Then move into brainstorm, writing, annotation, and self-assessment."
+    ];
+  }
+  return fam().nonneg;
+}
+
+/* ============================================================
+   RENDER
+============================================================ */
+function renderAll(){
+  // Tabs
+  $$(".fam").forEach(b => b.classList.toggle("on", b.dataset.fam === state.famKey));
+  // Exemplar button
+  $("#btnExemplar").classList.toggle("on", state.exemplar);
+  $("#btnExemplar").textContent = state.exemplar ? "Exemplar Mode · ON" : "Exemplar Mode";
+  $("#exBanner").classList.toggle("vis", state.exemplar);
+  // Step rail
+  $$(".rstep").forEach(b=>b.classList.toggle("on", +b.dataset.step===state.step));
+  $$(".panel").forEach(p=>p.classList.remove("on"));
+  $("#p"+state.step).classList.add("on");
+  // Content
+  renderStep1();
+  renderStep2();
+  renderStep3();
+  renderStep4();
+  renderStep5();
+  renderStep6();
+  renderStep7();
+  renderStep8();
+  renderDemoNotice();
+  // Done-marker on rail (based on data present)
+  updateRailProgress();
+}
+
+function updateRailProgress(){
+  const d = state.data;
+  const done = {
+    1:true,
+    2:true,
+    3: !!(d.brain && Object.values(d.brain).some(v=>v&&v.trim())),
+    4: !!(d.response && d.response.trim()),
+    5: !!(((d.annotations||[]).length) || (d.emap && d.emap.some(r=>r.quote&&r.quote.trim()))),
+    6: !!(d.post && Object.values(d.post).some(v=>v)),
+    7: !!(d.post && Object.values(d.post).some(v=>v)),
+    8: !!(d.teacher && (d.teacher.rows||[]).some(r=>r.quote))
+  };
+  $$(".rstep").forEach(b=>{
+    const s=+b.dataset.step;
+    b.classList.toggle("done", !!done[s] && s!==state.step);
+  });
+}
+
+function renderStep1(){
+  const f = fam();
+  const q = activeQuestion();
+  // Exemplar narrative
+  const ex = EXEMPLAR_NARRATIVES[state.famKey];
+  const ex1 = $("#ex1");
+  ex1.innerHTML = ex && ex.step1 ? ex.step1 : "";
+  ex1.classList.toggle("vis", state.exemplar && ex && ex.step1);
+
+  $("#qhead").innerHTML =
+    `<span class="chip gold">${esc(f.paper)}</span>`+
+    `<span class="chip teal">${esc(f.label)}</span>`+
+    `<span class="chip">${f.marks} marks</span>`+
+    `<span class="chip">Command: ${esc(f.cmdterms.join(" / "))}</span>`+
+    (state.custom&& (state.custom.text||'').trim()?`<span class="chip" style="background:var(--teal);color:#0E1020">Custom: ${esc(state.custom.title||"")}</span>`:`<span class="chip">${esc(q.title)}</span>`);
+  $("#qtext").textContent = q.text || "No question loaded yet.";
+  $("#qhint").textContent = q.hint || "";
+
+  $("#mscheme").innerHTML = activeMScheme().map(x=>`<li>${esc(x)}</li>`).join("");
+  $("#nonneg").innerHTML  = activeNonneg().map(x=>`<li>${esc(x)}</li>`).join("");
+  $("#testing").textContent = f.testing;
+  $("#cmdfocus").textContent = f.cmdFocus;
+  $("#weak").innerHTML   = f.weak.map(x=>`<li>${esc(x)}</li>`).join("");
+  $("#strong").innerHTML = f.strong.map(x=>`<li>${esc(x)}</li>`).join("");
+}
+
+function renderStep2(){
+  const f=fam();
+  $("#exmind").innerHTML = f.exMind.map(x=>`<li>${esc(x)}</li>`).join("");
+  $("#excmd").textContent = f.exCmd;
+  $("#exsrc").textContent = f.exSrc;
+  $("#extraps").innerHTML = f.exTraps.map(x=>`<li>${esc(x)}</li>`).join("");
+  $("#explan").innerHTML  = f.exPlan.map(x=>`<li>${esc(x)}</li>`).join("");
+}
+
+function renderStep3(){
+  const f=fam();
+  // exemplar narrative
+  const ex = EXEMPLAR_NARRATIVES[state.famKey];
+  const ex3 = $("#ex3");
+  ex3.innerHTML = ex && ex.step3 ? ex.step3 : "";
+  ex3.classList.toggle("vis", state.exemplar && ex && ex.step3);
+
+  // pre checklist
+  const pre = state.data.pre = state.data.pre || {};
+  const preEl = $("#preclist");
+  preEl.innerHTML="";
+  f.preChecklist.forEach(item=>{
+    const li=el("li",{class:"cli"+(pre[item.id]?" checked":"")});
+    li.innerHTML=`<input type="checkbox" ${pre[item.id]?"checked":""}><span class="cli-text">${esc(item.text)}</span>`;
+    li.querySelector("input").addEventListener("change",e=>{
+      pre[item.id]=e.target.checked;
+      li.classList.toggle("checked",e.target.checked);
+      queueSave();
+    });
+    preEl.appendChild(li);
+  });
+
+  // brainstorm fields
+  const brain = state.data.brain = state.data.brain || {};
+  const bf = $("#brainfields");
+  bf.innerHTML="";
+  f.brainFields.forEach(fld=>{
+    const lbl=el("label",{class:"field"});
+    lbl.innerHTML=`<span class="lbl">${esc(fld.label)} <small>keywords only — not a finished sentence</small></span>`;
+    const t=el("textarea",{class:"ta",rows:fld.rows||2,placeholder:fld.ph||""});
+    t.value = brain[fld.id]||"";
+    t.addEventListener("input",()=>{ brain[fld.id]=t.value; queueSave(); renderStep4Echo(); });
+    lbl.appendChild(t);
+    bf.appendChild(lbl);
+  });
+}
+
+function renderStep4(){
+  const f=fam();
+  const box = $("#writeBox");
+  // adaptive size
+  box.className = "ta " + (f.marks<=4 ? "" : (f.marks<=6 ? "long" : "xlong"));
+  box.value = state.data.response || "";
+  box.oninput = ()=>{
+    state.data.response = box.value;
+    $("#wcpill").textContent = wordCount(box.value)+" words";
+    queueSave();
+  };
+  $("#wcpill").textContent = wordCount(box.value)+" words";
+  // gate
+  const hasBrain = state.data.brain && Object.values(state.data.brain).some(v=>v&&v.trim());
+  $("#writeGate").classList.toggle("vis", !hasBrain);
+  renderStep4Echo();
+}
+function renderStep4Echo(){
+  const f=fam();
+  const brain = state.data.brain || {};
+  const echo = f.brainFields.map(fld=>{
+    const v = brain[fld.id];
+    if(!v||!v.trim()) return "";
+    return `<div style="margin-bottom:10px"><div style="font-size:10px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:700;margin-bottom:3px">${esc(fld.label)}</div><div style="color:var(--text);white-space:pre-wrap">${esc(v)}</div></div>`;
+  }).join("") || `<div style="color:var(--muted);font-style:italic">Your brainstorm is empty. Go back to Step 3 to plan before writing.</div>`;
+  $("#brainecho").innerHTML = echo;
+}
+
+
+function responseToMarkup(response){
+  const trimmed = (response||'').trim();
+  if(!trimmed) return '';
+  return trimmed.split(/\n\s*\n/).map(p=>`<p>${esc(p).replace(/\n/g,'<br>')}</p>`).join('');
+}
+function escapeRegExp(str){ return (str||'').replace(/[.*+?^${}()|[\]\\]/g,'\\$&'); }
+function annotationMarkup(stamp,id,innerHtml){
+  return `<span class="inline-annot" data-ann-id="${id}" data-stamp="${stamp}"><span class="annot-core">${innerHtml}</span><span class="inline-badge">${stamp}</span></span>`;
+}
+function bootstrapAnnotationsFromLegacy(){
+  const response = state.data.response || '';
+  const legacy = Array.isArray(state.data.emap) ? state.data.emap : [];
+  let html = responseToMarkup(response);
+  const annotations = [];
+  if(!response.trim()){
+    state.data.annotatedSource = response;
+    state.data.annotatedHtml = '';
+    state.data.annotations = [];
+    return;
+  }
+  legacy.forEach((row,idx)=>{
+    const id = `ann_${Date.now()}_${idx}`;
+    const quote = (row.quote||'').trim();
+    annotations.push({id,stamp:row.stamp,text:quote,note:row.note||''});
+    if(quote){
+      const safeQuote = esc(quote);
+      html = html.replace(new RegExp(escapeRegExp(safeQuote)), annotationMarkup(row.stamp,id,safeQuote));
+    }
+  });
+  state.data.annotations = annotations;
+  state.data.annotatedSource = response;
+  state.data.annotatedHtml = html || responseToMarkup(response);
+}
+function syncEmapFromAnnotations(){
+  const annotations = Array.isArray(state.data.annotations) ? state.data.annotations : [];
+  state.data.emap = annotations.map(a=>({stamp:a.stamp,quote:a.text||'',note:a.note||''}));
+}
+function ensureAnnotationState(){
+  state.data.annotations = Array.isArray(state.data.annotations) ? state.data.annotations : [];
+  const response = state.data.response || '';
+  if(!response.trim()){
+    state.data.annotatedSource = '';
+    state.data.annotatedHtml = '';
+    state.data.annotations = [];
+    state.data.emap = [];
+    return;
+  }
+  if(!state.data.annotatedHtml){
+    if((state.data.emap||[]).length && !state.data.annotations.length){
+      bootstrapAnnotationsFromLegacy();
+    } else {
+      state.data.annotatedSource = response;
+      state.data.annotatedHtml = responseToMarkup(response);
+    }
+  }
+  if(!state.data.annotatedSource) state.data.annotatedSource = response;
+  syncEmapFromAnnotations();
+}
+function annotationSelectionStatus(msg, cls=''){
+  const el = $("#annotStatus");
+  if(!el) return;
+  el.className = `annot-status${cls ? ' '+cls : ''}`;
+  el.textContent = msg;
+}
+function findAnnotAncestor(node){
+  if(!node) return null;
+  if(node.nodeType===3) node = node.parentNode;
+  return node && node.closest ? node.closest('.inline-annot') : null;
+}
+function syncAnnotatedStateFromDom(){
+  const surface = $("#annotatedResponse");
+  if(surface) state.data.annotatedHtml = surface.innerHTML;
+  syncEmapFromAnnotations();
+}
+function rebuildAnnotationsFromCurrentResponse(){
+  const response = state.data.response || '';
+  state.data.annotations = [];
+  state.data.annotatedSource = response;
+  state.data.annotatedHtml = responseToMarkup(response);
+  syncEmapFromAnnotations();
+  queueSave();
+  renderStep5();
+}
+function clearAllAnnotations(){
+  rebuildAnnotationsFromCurrentResponse();
+  annotationSelectionStatus('All annotations cleared. Select text in the response, then click a stamp.');
+}
+function applyTextAnnotation(stamp){
+  const surface = $("#annotatedResponse");
+  if(!surface || !surface.innerHTML.trim()){
+    annotationSelectionStatus('Write a response in Step 4 first, then come back to annotate it.','err');
+    return;
+  }
+  if((state.data.annotatedSource||'') !== (state.data.response||'')){
+    annotationSelectionStatus('Your Step 4 answer changed. Click "Use current Step 4 response" before adding new highlights.','warn');
+    return;
+  }
+  const sel = window.getSelection();
+  if(!sel || !sel.rangeCount){
+    annotationSelectionStatus('Select text in the response first, then click a stamp.','warn');
+    return;
+  }
+  const range = sel.getRangeAt(0);
+  if(range.collapsed || !surface.contains(range.commonAncestorContainer)){
+    annotationSelectionStatus('Select text inside the response first, then click a stamp.','warn');
+    return;
+  }
+  if(findAnnotAncestor(range.startContainer) || findAnnotAncestor(range.endContainer)){
+    annotationSelectionStatus('That phrase is already inside an annotation. Remove it first if you want to re-tag it.','warn');
+    return;
+  }
+  const selectedText = sel.toString().replace(/\s+/g,' ').trim();
+  if(!selectedText){
+    annotationSelectionStatus('Select a meaningful phrase, not just blank space.','warn');
+    return;
+  }
+  const id = `ann_${Date.now()}_${Math.random().toString(36).slice(2,7)}`;
+  const wrapper = document.createElement('span');
+  wrapper.className = 'inline-annot';
+  wrapper.dataset.annId = id;
+  wrapper.dataset.stamp = stamp;
+  const core = document.createElement('span');
+  core.className = 'annot-core';
+  core.appendChild(range.extractContents());
+  const badge = document.createElement('span');
+  badge.className = 'inline-badge';
+  badge.textContent = stamp;
+  wrapper.appendChild(core);
+  wrapper.appendChild(badge);
+  range.insertNode(wrapper);
+  sel.removeAllRanges();
+  state.data.annotations.push({id,stamp,text:selectedText,note:''});
+  syncAnnotatedStateFromDom();
+  queueSave();
+  renderAnnotationLog();
+  annotationSelectionStatus(`Added ${stamp} to: "${selectedText}"`);
+}
+function removeAnnotation(id){
+  const surface = $("#annotatedResponse");
+  const node = surface ? surface.querySelector(`[data-ann-id="${id}"]`) : null;
+  if(node){
+    const core = node.querySelector('.annot-core');
+    while(core && core.firstChild){ node.parentNode.insertBefore(core.firstChild,node); }
+    node.remove();
+  }
+  state.data.annotations = (state.data.annotations||[]).filter(a=>a.id!==id);
+  syncAnnotatedStateFromDom();
+  queueSave();
+  renderAnnotationLog();
+  annotationSelectionStatus('Annotation removed.');
+}
+function renderAnnotationLog(){
+  const wrap = $("#annotationLog");
+  const summary = $("#annotationSummary");
+  if(!wrap || !summary) return;
+  const annotations = state.data.annotations || [];
+  if(!annotations.length){
+    summary.textContent = 'No annotations yet. Select a phrase in the response and click a stamp.';
+    wrap.innerHTML = `<div class="annot-log-empty">No highlights yet. This is where stamped phrases and quick notes will appear.</div>`;
+    syncEmapFromAnnotations();
+    return;
+  }
+  const counts = {};
+  annotations.forEach(a=> counts[a.stamp] = (counts[a.stamp]||0)+1 );
+  summary.innerHTML = Object.entries(counts).map(([stamp,count])=>`<span class="tag" style="background:var(--${stampVar(stamp)})">${stamp} × ${count}</span>`).join(' ') + ` <span style="margin-left:6px">${annotations.length} total highlight${annotations.length===1?'':'s'}</span>`;
+  wrap.innerHTML = '';
+  annotations.forEach((ann,idx)=>{
+    const item = el('div',{class:'annot-item'});
+    item.innerHTML = `
+      <div class="annot-item-head">
+        <span class="tag" style="background:var(--${stampVar(ann.stamp)})">${esc(ann.stamp)}</span>
+        <div class="annot-quote">“${esc(ann.text || '')}”</div>
+        <button class="emap-del" data-ann-del="${esc(ann.id)}">✕</button>
+      </div>
+      <textarea class="annot-item-note" rows="2" placeholder="Why does this count? What does it do in the answer?" data-ann-note="${esc(ann.id)}">${esc(ann.note||'')}</textarea>`;
+    item.querySelector('[data-ann-del]').onclick = ()=> removeAnnotation(ann.id);
+    item.querySelector('[data-ann-note]').addEventListener('input',e=>{
+      const target = state.data.annotations.find(a=>a.id===ann.id);
+      if(target) target.note = e.target.value;
+      syncAnnotatedStateFromDom();
+      queueSave();
+    });
+    wrap.appendChild(item);
+  });
+  syncEmapFromAnnotations();
+}
+function renderStep5(){
+  const f=fam();
+  const ex=EXEMPLAR_NARRATIVES[state.famKey];
+  const ex5=$("#ex5");
+  ex5.innerHTML = ex && ex.step5 ? ex.step5 : "";
+  ex5.classList.toggle("vis", state.exemplar && ex && ex.step5);
+
+  ensureAnnotationState();
+
+  const sb=$("#stampbar"); sb.innerHTML="";
+  f.stamps.forEach(s=>{
+    const b=el("button",{class:"stamp","data-s":s,text:s});
+    b.title = STAMP_MEANINGS[s]||"";
+    b.onclick = ()=>applyTextAnnotation(s);
+    sb.appendChild(b);
+  });
+  $("#stampLegend").innerHTML = f.stamps.map(s=>`<strong>${s}</strong> = ${esc(STAMP_MEANINGS[s]||"")}`).join(" · ");
+
+  const response = state.data.response || '';
+  const surface = $("#annotatedResponse");
+  const warn = $("#annotSyncWarn");
+  if(!response.trim()){
+    surface.classList.add('empty');
+    surface.innerHTML = 'No response written yet. Go back to Step 4, write or paste the answer, then return here to annotate it.';
+    warn.innerHTML = '';
+    renderAnnotationLog();
+    annotationSelectionStatus('Write a response in Step 4 first, then come back to annotate it.');
+  } else {
+    surface.classList.remove('empty');
+    surface.innerHTML = state.data.annotatedHtml || responseToMarkup(response);
+    if((state.data.annotatedSource||'') !== response && (state.data.annotations||[]).length){
+      warn.innerHTML = `<div class="annot-warn"><strong>Response changed after annotation</strong>Your Step 4 response is different from the annotated version shown here. Click <em>Use current Step 4 response</em> to rebuild this panel from the latest writing. This clears the old highlights so students are not annotating outdated text.</div>`;
+      annotationSelectionStatus('Your Step 4 answer changed. Rebuild from the current response before adding new highlights.','warn');
+    } else {
+      warn.innerHTML = '';
+      annotationSelectionStatus('Select text in the response, then click a stamp.');
+    }
+    renderAnnotationLog();
+  }
+
+  $("#syncAnnotBtn").onclick = ()=>rebuildAnnotationsFromCurrentResponse();
+  $("#clearAnnotBtn").onclick = ()=>clearAllAnnotations();
+}
+function stampVar(s){
+  const map={"DEF":"DEF","EV":"EV","SH":"SH","IMP":"IMP","LINK":"LINK","JDG":"JDG","ARG+":"ARGP","ARG-":"ARGM","CB":"CB","SIM":"SIM","DIFF":"DIFF","SRC-C":"SRCC","SRC-D":"SRCD"};
+  return map[s]||"muted";
+}
+
+function renderStep6(){
+
+  const f=fam();
+  // post checklist
+  const post = state.data.post = state.data.post || {};
+  const pe=$("#postclist"); pe.innerHTML="";
+  f.postChecklist.forEach(item=>{
+    const li=el("li",{class:"cli"+(post[item.id]?" checked":"")});
+    const capNote = item.cap!==null && item.cap!==undefined
+      ? ` <span class="cap-warn" title="If unchecked, your score is capped at ${item.cap}.">caps at ${item.cap}</span>`
+      : "";
+    li.innerHTML=`<input type="checkbox" ${post[item.id]?"checked":""}><span class="cli-text">${esc(item.text)}${capNote}</span>`;
+    li.querySelector("input").addEventListener("change",e=>{
+      post[item.id]=e.target.checked;
+      li.classList.toggle("checked",e.target.checked);
+      queueSave();
+      renderStep7();
+    });
+    pe.appendChild(li);
+  });
+  // rubric
+  const rb=$("#rubric"); rb.innerHTML="";
+  f.rubric.forEach(b=>{
+    const div=el("div",{class:"band"});
+    div.innerHTML=`<div class="band-head"><div class="band-lvl">${esc(b.lvl)}</div><div class="band-m ${b.cls}">${esc(b.m)}</div></div><div class="band-d">${esc(b.d)}</div>`;
+    rb.appendChild(div);
+  });
+  $("#rubricSrc").textContent = "Source: "+f.rubricSrc;
+}
+
+function computeScore(){
+  const f=fam();
+  const post = state.data.post || {};
+  const items = f.postChecklist;
+  const totalW = items.reduce((s,i)=>s+(i.weight||1),0);
+  const gotW   = items.reduce((s,i)=>s+(post[i.id]?(i.weight||1):0),0);
+  let score = Math.round((gotW/totalW) * f.marks);
+  // Hard caps: if an item has a cap and is unchecked, cap score
+  const capsApplied = [];
+  items.forEach(i=>{
+    if(i.cap!==null && i.cap!==undefined && !post[i.id]){
+      if(score>i.cap){
+        capsApplied.push({text:i.text,cap:i.cap});
+        score=i.cap;
+      } else {
+        capsApplied.push({text:i.text,cap:i.cap,silent:true});
+      }
+    }
+  });
+  if(score<0)score=0;
+  if(score>f.marks)score=f.marks;
+  return {score, total:f.marks, capsApplied, gotW, totalW};
+}
+
+function bandForScore(s,max){
+  const r = s/max;
+  if(r>=0.85) return {name:"Top band",cls:"top"};
+  if(r>=0.65) return {name:"Upper mid",cls:"good"};
+  if(r>=0.4)  return {name:"Mid band",cls:"mid"};
+  return {name:"Low band",cls:"low"};
+}
+
+function renderStep7(){
+  const res = computeScore();
+  const band = bandForScore(res.score, res.total);
+  $("#scNum").textContent = res.score;
+  $("#scMax").textContent = "/ "+res.total;
+  const bandEl = $("#scBand");
+  bandEl.textContent = band.name;
+  bandEl.className = "sc-band "+band.cls;
+  // caps
+  const caps = res.capsApplied.filter(c=>!c.silent);
+  const capsBox = $("#scCaps");
+  if(caps.length){
+    capsBox.classList.add("vis");
+    capsBox.innerHTML = "<strong>Hard caps applied because:</strong>"+
+      caps.map(c=>`<div>• unchecked → "${esc(c.text)}" · score capped at ${c.cap}</div>`).join("");
+  } else {
+    capsBox.classList.remove("vis");
+    capsBox.innerHTML="";
+  }
+  // notes
+  const wc = wordCount(state.data.response||"");
+  const annCount = (state.data.annotations||[]).length;
+  $("#scNotes").innerHTML =
+    `Self-identified evidence: ${res.gotW}/${res.totalW} weight-points · Response length: ${wc} words`+
+    (annCount?` · ${annCount} direct text annotation${annCount===1?"":"s"} logged`:(state.data.emap&&state.data.emap.length?` · ${state.data.emap.length} evidence rows logged`:""));
+
+  // AI prompt
+  $("#promptBox").textContent = buildAIPrompt(res);
+}
+
+function buildAIPrompt(scoreRes){
+  const f=fam();
+  const q=activeQuestion();
+  const brain=state.data.brain||{};
+  const post=state.data.post||{};
+  const emap=state.data.emap||[];
+  const lines=[];
+  lines.push("You are an IB Digital Society examiner.");
+  lines.push("Mark the student response below against the official IB markband. Do NOT inflate praise. Stay close to the rubric. Penalise vagueness. Do NOT rewrite the whole answer. If the student's self-assessment looks unrealistic, challenge it.");
+  lines.push("");
+  lines.push("QUESTION FAMILY: "+f.paper+" · "+f.label+" ("+f.marks+" marks)");
+  lines.push("COMMAND TERMS: "+f.cmdterms.join(" / "));
+  lines.push("QUESTION TITLE: "+(q.title||""));
+  lines.push("QUESTION TEXT:");
+  lines.push(q.text||"");
+  lines.push("");
+  lines.push("MARKSCHEME ANCHORS:");
+  activeMScheme().forEach(a=>lines.push("• "+a));
+  lines.push("");
+  lines.push("NON-NEGOTIABLES:");
+  activeNonneg().forEach(n=>lines.push("• "+n));
+  lines.push("");
+  lines.push("STUDENT BRAINSTORM:");
+  f.brainFields.forEach(fld=>{
+    const v=brain[fld.id]||"(blank)";
+    lines.push("- "+fld.label+": "+v);
+  });
+  lines.push("");
+  lines.push("STUDENT RESPONSE:");
+  lines.push((state.data.response||"(blank)"));
+  lines.push("");
+  lines.push("STUDENT EVIDENCE MAP (annotations located by the student):");
+  if(emap.length){
+    emap.forEach(r=>{
+      if(r.quote||r.note){
+        lines.push(`- [${r.stamp}] "${r.quote||"(no quote)"}" — ${r.note||"(no note)"}`);
+      }
+    });
+  } else {
+    lines.push("(no evidence logged)");
+  }
+  lines.push("");
+  lines.push("SELF-ASSESSMENT CHECKLIST:");
+  f.postChecklist.forEach(i=>{
+    lines.push(`- [${post[i.id]?"x":" "}] ${i.text}`+(i.cap!==null&&i.cap!==undefined?` (cap if unchecked: ${i.cap})`:""));
+  });
+  lines.push("");
+  lines.push("PROVISIONAL SCORE (self-identified): "+scoreRes.score+"/"+scoreRes.total);
+  if(scoreRes.capsApplied.filter(c=>!c.silent).length){
+    lines.push("Hard caps applied: "+scoreRes.capsApplied.filter(c=>!c.silent).map(c=>`"${c.text}" → cap ${c.cap}`).join("; "));
+  }
+  lines.push("");
+  lines.push("PLEASE RETURN EXACTLY THESE ITEMS:");
+  lines.push("1. Estimated mark out of "+f.marks+" (a single integer).");
+  lines.push("2. Band label (from the rubric above).");
+  lines.push("3. What is working (2–3 bullets, tied to rubric language).");
+  lines.push("4. What is missing (2–3 bullets, tied to rubric language).");
+  lines.push("5. Is the response primarily descriptive or analytical? Justify in one sentence.");
+  lines.push("6. One short verbatim quote from the student's writing that best illustrates your judgement.");
+  lines.push("7. One next-step revision target (concrete — naming the sentence or paragraph to revise).");
+  lines.push("");
+  lines.push("If the student's self-assessment looks unrealistic (e.g., full ticks but weak response), say so explicitly.");
+  return lines.join("\n");
+}
+
+function renderStep8(){
+  const t = state.data.teacher = state.data.teacher || {rows:[],final:"",comment:""};
+  const rowsEl=$("#teachRows"); rowsEl.innerHTML="";
+  if(!t.rows.length) t.rows.push({quote:"",issue:"",reason:"",next:"",mark:""});
+  t.rows.forEach((r,i)=>{
+    const row=el("div",{class:"teacher-row"});
+    row.innerHTML=`
+      <textarea placeholder="Quote from student response…" data-k="quote" data-i="${i}">${esc(r.quote)}</textarea>
+      <input placeholder="Issue type" data-k="issue" data-i="${i}" value="${esc(r.issue)}">
+      <input placeholder="Markband / rubric reason" data-k="reason" data-i="${i}" value="${esc(r.reason)}">
+      <input placeholder="Next step" data-k="next" data-i="${i}" value="${esc(r.next)}">
+      <input placeholder="Mark" data-k="mark" data-i="${i}" value="${esc(r.mark)}">
+      <button class="emap-del" data-del="${i}">✕</button>`;
+    row.querySelectorAll("input,textarea").forEach(inp=>{
+      inp.addEventListener("input",e=>{
+        const i=+e.target.dataset.i, k=e.target.dataset.k;
+        t.rows[i][k]=e.target.value; queueSave();
+      });
+    });
+    row.querySelector("[data-del]").onclick=()=>{
+      t.rows.splice(i,1); if(!t.rows.length) t.rows.push({quote:"",issue:"",reason:"",next:"",mark:""});
+      renderStep8(); queueSave();
+    };
+    rowsEl.appendChild(row);
+  });
+  $("#teachFinal").value = t.final||"";
+  $("#teachComment").value = t.comment||"";
+  $("#teachFinal").oninput  = e=>{ t.final=e.target.value; queueSave(); };
+  $("#teachComment").oninput= e=>{ t.comment=e.target.value; queueSave(); };
+}
+
+/* ============================================================
+   EVENTS
+============================================================ */
+document.addEventListener("DOMContentLoaded",()=>{
+  loadState();
+  // family tab clicks
+  $$(".fam").forEach(b=>{
+    b.addEventListener("click",()=>{
+      state.famKey = b.dataset.fam;
+      // reload data for this family
+      const c = localStorage.getItem(LS_CUSTOM+state.famKey);
+      state.custom = c ? JSON.parse(c) : null;
+      const d = localStorage.getItem(stateKey());
+      state.data = d ? JSON.parse(d) : {};
+      saveState();
+      renderAll();
+    });
+  });
+  // step rail
+  $$(".rstep").forEach(b=>{
+    b.addEventListener("click",()=>{
+      state.step = +b.dataset.step;
+      renderAll();
+    });
+  });
+  // step nav buttons
+  document.addEventListener("click",e=>{
+    const go=e.target && e.target.dataset && e.target.dataset.go;
+    if(go){ state.step=+go; renderAll(); window.scrollTo({top:0,behavior:"smooth"}); }
+  });
+  // header buttons
+  $("#btnExemplar").addEventListener("click",()=>{
+    state.exemplar = !state.exemplar;
+    saveState(); renderAll();
+  });
+  $("#btnCustom").addEventListener("click",()=>openCustom());
+  $("#btnLoadDemo").addEventListener("click",()=>applyPack(DEMO_PACK,{step:1}));
+  $("#btnImportJson").addEventListener("click",()=> $("#jsonImportInput").click());
+  $("#jsonImportInput").addEventListener("change",async (e)=>{
+    const file = e.target.files && e.target.files[0];
+    if(!file) return;
+    try{
+      const text = await file.text();
+      const pack = JSON.parse(text);
+      applyPack(pack,{step:1});
+    }catch(err){
+      alert("Could not import that JSON file. Use a question pack with family, customQuestion, and optional data.\n\n" + err.message);
+    }
+    e.target.value = "";
+  });
+  $("#btnReset").addEventListener("click",()=> $("#resetModal").classList.add("vis"));
+  $("#confirmReset").addEventListener("click",()=>{
+    state.data={};
+    localStorage.removeItem(stateKey());
+    $("#resetModal").classList.remove("vis");
+    renderAll();
+  });
+  // close any modal on outer click or Cancel button
+  document.addEventListener("click",e=>{
+    if(e.target.classList && e.target.classList.contains("modal-bg")){ e.target.classList.remove("vis"); }
+    if(e.target.tagName==="BUTTON" && e.target.textContent==="Cancel"){
+      e.target.closest(".modal-bg").classList.remove("vis");
+    }
+  });
+  // custom save/clear
+  $("#cSave").addEventListener("click",()=>{
+    const title=$("#cTitle").value.trim();
+    const text=$("#cText").value.trim();
+    const anchors=$("#cAnchors").value.split(/\n+/).map(s=>s.trim()).filter(Boolean);
+    const nonneg=$("#cNonneg").value.split(/\n+/).map(s=>s.trim()).filter(Boolean);
+    if(!text){ alert("Please paste the question text."); return; }
+    state.custom = {title,text,anchors,nonneg};
+    localStorage.setItem(LS_CUSTOM+state.famKey, JSON.stringify(state.custom));
+    // switch data bucket since stateKey depends on custom
+    const d = localStorage.getItem(stateKey());
+    state.data = d ? JSON.parse(d) : {};
+    $("#customModal").classList.remove("vis");
+    renderAll();
+  });
+  $("#cClear").addEventListener("click",()=>{
+    state.custom=null;
+    localStorage.removeItem(LS_CUSTOM+state.famKey);
+    const d = localStorage.getItem(stateKey());
+    state.data = d ? JSON.parse(d) : {};
+    $("#customModal").classList.remove("vis");
+    renderAll();
+  });
+  // copy AI prompt
+  $("#copyBtn").addEventListener("click",()=>{
+    const txt=$("#promptBox").textContent;
+    navigator.clipboard.writeText(txt).then(()=>{
+      const b=$("#copyBtn");
+      b.classList.add("done");
+      b.textContent="Copied ✓";
+      setTimeout(()=>{b.classList.remove("done"); b.textContent="Copy prompt to clipboard";},1800);
+    });
+  });
+  // teacher log
+  $("#addTeachRow").addEventListener("click",()=>{
+    state.data.teacher = state.data.teacher || {rows:[],final:"",comment:""};
+    state.data.teacher.rows.push({quote:"",issue:"",reason:"",next:"",mark:""});
+    renderStep8(); queueSave();
+  });
+  // export json
+  $("#exportJson").addEventListener("click",()=>{
+    const payload = {
+      family: state.famKey,
+      familyLabel: fam().label,
+      custom: state.custom,
+      question: activeQuestion(),
+      markscheme: activeMScheme(),
+      nonNegotiables: activeNonneg(),
+      data: state.data,
+      scoring: computeScore(),
+      exportedAt: new Date().toISOString()
+    };
+    download("digsoc_session_"+state.famKey+".json", JSON.stringify(payload,null,2), "application/json");
+  });
+  $("#exportTxt").addEventListener("click",()=>{
+    const f=fam(); const q=activeQuestion(); const s=computeScore();
+    const brain=state.data.brain||{}; const post=state.data.post||{}; const emap=state.data.emap||[]; const t=state.data.teacher||{rows:[],final:"",comment:""};
+    const md=[];
+    md.push("# IB Digital Society · Response Report");
+    md.push("");
+    md.push("**Family:** "+f.paper+" — "+f.label+" ("+f.marks+" marks)");
+    md.push("**Question:** "+(q.title||"")+"\n\n> "+q.text);
+    md.push("");
+    md.push("## Markscheme anchors");
+    activeMScheme().forEach(a=>md.push("- "+a));
+    md.push("");
+    md.push("## Non-negotiables");
+    activeNonneg().forEach(n=>md.push("- "+n));
+    md.push("");
+    md.push("## Brainstorm");
+    f.brainFields.forEach(fld=>md.push("**"+fld.label+":** "+(brain[fld.id]||"(blank)")));
+    md.push("");
+    md.push("## Response");
+    md.push("");
+    md.push(state.data.response||"(blank)");
+    md.push("");
+    md.push("## Evidence map");
+    if(emap.length) emap.forEach(r=>md.push(`- **[${r.stamp}]** "${r.quote||""}" — ${r.note||""}`));
+    else md.push("(none)");
+    md.push("");
+    md.push("## Self-assessment checklist");
+    f.postChecklist.forEach(i=>md.push(`- [${post[i.id]?"x":" "}] ${i.text}`));
+    md.push("");
+    md.push("## Provisional score: **"+s.score+" / "+s.total+"** · "+bandForScore(s.score,s.total).name);
+    md.push("_Provisional estimate based on self-identified evidence — not a final IB mark._");
+    if(s.capsApplied.filter(c=>!c.silent).length){
+      md.push("");
+      md.push("**Hard caps applied:**");
+      s.capsApplied.filter(c=>!c.silent).forEach(c=>md.push("- "+c.text+" → cap "+c.cap));
+    }
+    md.push("");
+    md.push("## Teacher evidence log");
+    t.rows.forEach(r=>{
+      if(r.quote||r.issue||r.reason||r.next||r.mark){
+        md.push(`- **Quote:** "${r.quote||""}" · **Issue:** ${r.issue||""} · **Rubric reason:** ${r.reason||""} · **Next step:** ${r.next||""} · **Mark:** ${r.mark||""}`);
+      }
+    });
+    if(t.final)   md.push("**Final teacher mark:** "+t.final);
+    if(t.comment) md.push("**Teacher comment:** "+t.comment);
+    md.push("");
+    md.push("_Generated by DigSoc Response Studio on "+new Date().toLocaleString()+"_");
+    download("digsoc_report_"+state.famKey+".md", md.join("\n"), "text/markdown");
+  });
+  $("#exportQuestionPack").addEventListener("click",()=>{
+    const pack = buildQuestionPack();
+    const base = (pack.customQuestion.title || "question_pack").toLowerCase().replace(/[^a-z0-9]+/g,"_").replace(/^_|_$/g,"");
+    download((base || "question_pack")+".json", JSON.stringify(pack,null,2), "application/json");
+  });
+
+  $("#clearThis").addEventListener("click",()=>{
+    if(confirm("Clear all saved work for this question? Teacher notes included.")){
+      state.data={};
+      localStorage.removeItem(stateKey());
+      renderAll();
+    }
+  });
+
+  // initial render
+  renderAll();
+  // render AI prompt block initially
+  renderStep7();
+});
+
+function openCustom(){
+  const m=$("#customModal");
+  $("#cTitle").value   = state.custom?.title||"";
+  $("#cText").value    = state.custom?.text||"";
+  $("#cAnchors").value = (state.custom?.anchors||[]).join("\n");
+  $("#cNonneg").value  = (state.custom?.nonneg||[]).join("\n");
+  m.classList.add("vis");
+}
+
+function download(name, content, mime){
+  const blob=new Blob([content],{type:mime});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");
+  a.href=url; a.download=name; document.body.appendChild(a); a.click();
+  setTimeout(()=>{URL.revokeObjectURL(url); a.remove();},500);
+}
+
+</script>
+<script>
+/* =========================================================
+   Command-term adaptive overlay (retrofit)
+   Detects which of the 17 IB DS command terms appears in the
+   current question text (seeded OR custom) and overlays
+   term-specific guidance into Step 1 and Step 2 without
+   modifying the existing FAMILIES rubric logic.
+   ========================================================= */
+(function(){
+  const COMMAND_TERMS = {
+    identify: {
+      label:"Identify", bloom:"AO1", band:"Recall",
+      asks:"Provide an answer from a number of possibilities — no explanation needed.",
+      does:["Name two or more things.","Use DS terminology.","Keep answers short (noun phrases)."],
+      doesnt:["Explain or develop.","Argue for a position.","Write full analytical sentences."],
+      typicalMarks:[1,2,3],
+      strongExample:"Two features are (a) collaborative filtering; (b) implicit feedback.",
+      weakTrap:"Writing a paragraph when the question wants two noun phrases — wasted time, no extra marks."
+    },
+    state: {
+      label:"State", bloom:"AO1", band:"Recall",
+      asks:"Give a specific name, value, or other brief answer without explanation.",
+      does:["Answer directly.","Use precise terminology.","Keep it brief."],
+      doesnt:["Explain mechanism.","Give context.","List alternatives."],
+      typicalMarks:[1,2],
+      strongExample:"The term is metadata.",
+      weakTrap:"Adding explanation that isn't scored."
+    },
+    define: {
+      label:"Define", bloom:"AO1", band:"Terminology",
+      asks:"Give the precise meaning of a word, phrase, concept, or quantity.",
+      does:["Use the concept's standard definition.","Include distinguishing features.","One sentence if possible."],
+      doesnt:["Give examples instead of a definition.","Describe how the thing is used."],
+      typicalMarks:[1,2],
+      strongExample:"Metadata: data that describes other data (e.g., timestamp, location, author).",
+      weakTrap:"Describing the technology instead of defining the term."
+    },
+    describe: {
+      label:"Describe", bloom:"AO1", band:"Descriptive",
+      asks:"Give a detailed account without explanation or judgement.",
+      does:["Name features.","Sketch how the thing looks or works at surface level.","Use DS terminology."],
+      doesnt:["Evaluate.","Argue a position.","Compare unless asked."],
+      typicalMarks:[2,4],
+      strongExample:"A filter bubble is an online environment where algorithms show a user content matching their prior engagement, narrowing exposure to diverse views.",
+      weakTrap:"Drifting into evaluation or personal opinion — description only."
+    },
+    outline: {
+      label:"Outline", bloom:"AO1", band:"Descriptive",
+      asks:"Give a brief summary of the main points.",
+      does:["Cover the main features.","Keep each point short.","Use structure (two or three points)."],
+      doesnt:["Go deep on one point.","Include extensive examples."],
+      typicalMarks:[2,4],
+      strongExample:"Two key features: (1) targeted advertising based on behavioural data; (2) engagement-optimised feed ranking.",
+      weakTrap:"Writing a full paragraph when brevity is what's scored."
+    },
+    explain: {
+      label:"Explain", bloom:"AO2", band:"Developmental",
+      asks:"Give a detailed account including reasons or causes — not just what, but why / how.",
+      does:["State the point.","Develop with mechanism (how) OR consequence (why it matters).","Use cause → effect language."],
+      doesnt:["Just describe.","List without developing.","Evaluate."],
+      typicalMarks:[3,4,6],
+      strongExample:"Collaborative filtering narrows exposure because the algorithm prioritises items that similar users have engaged with; dissenting content with low engagement is systematically down-ranked, reducing diversity of exposure.",
+      weakTrap:"Listing two points without developing either — caps at half marks."
+    },
+    suggest: {
+      label:"Suggest", bloom:"AO3", band:"Applied reasoning",
+      asks:"Propose a solution, hypothesis, or possible answer.",
+      does:["Offer plausible options.","Justify briefly.","Use DS concepts to frame the suggestion."],
+      doesnt:["State as fact.","Ignore alternatives.","Write without reasoning."],
+      typicalMarks:[2,4,6],
+      strongExample:"One solution would be mandated algorithmic audits, because independent review can detect discriminatory patterns that internal reviews miss.",
+      weakTrap:"Suggesting without justifying — looks like opinion, not reasoning."
+    },
+    distinguish: {
+      label:"Distinguish", bloom:"AO2", band:"Comparative",
+      asks:"Make clear the differences between two or more concepts or items.",
+      does:["Name both items.","Name the axis/axes of difference.","Use same-axis comparison."],
+      doesnt:["Just describe both in parallel.","Skip the 'whereas' / 'in contrast' logic."],
+      typicalMarks:[2,4],
+      strongExample:"Data is raw facts; information is data that has been processed and given context. A timestamp is data; a timestamped police-activity heatmap is information.",
+      weakTrap:"Two parallel descriptions with no comparative language."
+    },
+    analyse: {
+      label:"Analyse", bloom:"AO3", band:"Analytical",
+      asks:"Break an issue into parts and examine relationships, causes, mechanisms, and consequences.",
+      does:["Decompose the issue.","Show cause → mechanism → consequence.","Anchor in specific examples.","Identify who is affected."],
+      doesnt:["Just describe.","List without depth.","Generalise without evidence."],
+      typicalMarks:[6,8],
+      strongExample:"The impact operates via three mechanisms: attention capture through variable-reward design; social-comparison amplification via like-metrics; algorithmic curation reinforcing negative affect — documented in the Haugen disclosures (2021).",
+      weakTrap:"Description dressed as analysis — no mechanism, no consequence chain."
+    },
+    examine: {
+      label:"Examine", bloom:"AO3", band:"Evaluative",
+      asks:"Consider an argument or concept to reveal assumptions and interrelationships.",
+      does:["Surface the assumptions behind a claim.","Identify internal tensions.","Consider multiple angles."],
+      doesnt:["Take a single position only.","Describe without probing.","Skip counter-perspectives."],
+      typicalMarks:[6,8],
+      strongExample:"Examining the claim that 'AI is neutral' surfaces three hidden assumptions: training data is representative, design choices are value-free, and deployment contexts don't shape effect. Each, on inspection, is contested.",
+      weakTrap:"Treating 'examine' as a synonym for 'describe'."
+    },
+    discuss: {
+      label:"Discuss", bloom:"AO3", band:"Evaluative (balanced)",
+      asks:"Offer a considered, balanced review covering a range of arguments, factors, or hypotheses.",
+      does:["Present multiple perspectives.","Weigh arguments on different sides.","Use evidence to support each side.","Reach a considered conclusion (judgement less forced than in 'to what extent')."],
+      doesnt:["Take a one-sided position.","List without balance.","Ignore counter-arguments."],
+      typicalMarks:[8,12],
+      strongExample:"On one hand, generative AI democratises creative expression. On the other, it erodes attribution and trust in human authorship. The balance depends on detection infrastructure and norms around disclosure.",
+      weakTrap:"Advocating instead of discussing — becomes persuasive, not balanced."
+    },
+    evaluate: {
+      label:"Evaluate", bloom:"AO3", band:"Evaluative (judgement)",
+      asks:"Make an appraisal by weighing strengths and limitations.",
+      does:["Identify strengths with evidence.","Identify limitations with evidence.","Make an overall judgement.","Justify the judgement."],
+      doesnt:["Just list strengths and limitations without a judgement.","Give opinion without evidence."],
+      typicalMarks:[8,12],
+      strongExample:"Collaborative filtering's strengths include personalisation and scale; its limitations include filter bubbles and bias amplification. On balance, the limitations outweigh the benefits for news contexts, though the judgement reverses for lower-stakes domains like music.",
+      weakTrap:"Listing pros and cons without reaching an evaluative judgement."
+    },
+    "to what extent": {
+      label:"To what extent", bloom:"AO3", band:"Evaluative (scale)",
+      asks:"Consider the merits of a case or argument — the answer is rarely 'fully' or 'not at all'.",
+      does:["State the degree of agreement.","Support with evidence for and against.","Anchor the judgement to conditions (who, when, with what safeguards).","Reach a conditional conclusion."],
+      doesnt:["Flat yes or no.","Ignore the scale.","Skip conditions on the judgement."],
+      typicalMarks:[8,12],
+      strongExample:"To a significant extent, algorithmic personalisation harms democratic discourse — but only where platforms lack content-neutral ranking options and regulators lack audit access.",
+      weakTrap:"Answering 'yes it does' or 'no it doesn't' without nuance."
+    },
+    justify: {
+      label:"Justify", bloom:"AO3", band:"Evaluative (position)",
+      asks:"Give valid reasons or evidence to support an answer or conclusion.",
+      does:["State the position clearly.","Provide reasoned support.","Address likely objections."],
+      doesnt:["Assert without evidence.","Ignore counter-arguments.","Rely on opinion only."],
+      typicalMarks:[6,8],
+      strongExample:"Regulators should mandate algorithmic transparency in hiring because (1) affected parties cannot otherwise contest unfair outcomes; (2) case precedent (Amazon, 2018) shows internal review is insufficient; (3) the regulatory burden is modest relative to the harm.",
+      weakTrap:"Stating a position without the 'because' chain — no marks for assertion alone."
+    },
+    compare: {
+      label:"Compare", bloom:"AO2", band:"Comparative",
+      asks:"Give an account of the similarities between two or more items or situations.",
+      does:["Use same-axis comparison.","Name shared features.","Use 'both', 'similarly', 'like'."],
+      doesnt:["Describe them in parallel with no connective logic.","Drift into difference unless asked."],
+      typicalMarks:[4,6],
+      strongExample:"Both Source C and Source D highlight the power asymmetry between platforms and users: C via data-extraction framing, D via terms-of-service complexity.",
+      weakTrap:"Two parallel summaries with no explicit similarity statement."
+    },
+    contrast: {
+      label:"Contrast", bloom:"AO2", band:"Comparative",
+      asks:"Give an account of the differences between two or more items or situations.",
+      does:["Use same-axis contrast.","Name the dimension of difference.","Use 'however', 'whereas', 'in contrast'."],
+      doesnt:["Describe both with no contrast markers.","List similarities instead."],
+      typicalMarks:[4,6],
+      strongExample:"Source C frames data practices as extractive, whereas Source D frames them as transactional — the difference turns on whether consent is treated as meaningful.",
+      weakTrap:"Two parallel descriptions with no explicit difference statement."
+    },
+    "compare and contrast": {
+      label:"Compare and contrast", bloom:"AO2–AO3", band:"Comparative (integrated)",
+      asks:"Give an account of BOTH similarities and differences between two or more items or situations.",
+      does:["Include at least one similarity AND one difference.","Use same-point comparison (not source-by-source summary).","Explicitly reference each source / item."],
+      doesnt:["Only list similarities.","Only list differences.","Summarise each source separately."],
+      typicalMarks:[6,8],
+      strongExample:"Both sources identify platform power as the core issue (similarity), but C locates the power in data extraction while D locates it in contract design (difference) — pointing to different regulatory responses.",
+      weakTrap:"Only doing half the task — caps low if only similarities OR only differences."
+    }
+  };
+
+  /* Multi-word first, then longer single words, then short ones. */
+  const TERM_PRIORITY = [
+    "compare and contrast","to what extent",
+    "analyse","analyze","evaluate","discuss","examine","justify","distinguish",
+    "describe","explain","outline","suggest","identify","compare","contrast",
+    "define","state"
+  ];
+  const TERM_ALIASES = { "analyze":"analyse" };
+
+  function detectCommandTerm(text){
+    if(!text) return null;
+    const t = " "+text.toLowerCase().replace(/[^a-z\s]+/g," ")+" ";
+    for(const term of TERM_PRIORITY){
+      const re = new RegExp("(?:^|\\W)"+term.replace(/ /g,"\\s+")+"(?:\\W|$)","i");
+      if(re.test(t)){
+        const key = TERM_ALIASES[term] || term;
+        if(COMMAND_TERMS[key]) return key;
+      }
+    }
+    return null;
+  }
+
+  function ensureDom(){
+    const p1 = document.getElementById("p1");
+    const p2 = document.getElementById("p2");
+    if(p1 && !document.getElementById("ctOverlay")){
+      const card = document.createElement("div");
+      card.id = "ctOverlay";
+      card.className = "card";
+      card.style.cssText = "border-left:3px solid #7cc4ff;margin-top:12px;display:none";
+      const qtextCard = (document.getElementById("qtext")||{}).closest ? document.getElementById("qtext").closest(".card") : null;
+      if(qtextCard && qtextCard.parentNode){
+        qtextCard.parentNode.insertBefore(card, qtextCard.nextSibling);
+      } else {
+        p1.appendChild(card);
+      }
+    }
+    if(p2 && !document.getElementById("ctStep2")){
+      const card = document.createElement("div");
+      card.id = "ctStep2";
+      card.className = "card";
+      card.style.cssText = "border-left:3px solid #7cc4ff;display:none;margin-bottom:12px";
+      const title = p2.querySelector(".ptitle");
+      const afterSub = title && title.nextElementSibling;
+      p2.insertBefore(card, afterSub ? afterSub.nextSibling : (title ? title.nextSibling : p2.firstChild));
+    }
+  }
+
+  function getFamilyCmdTerms(){
+    const qhead = document.getElementById("qhead");
+    if(!qhead) return [];
+    const chips = qhead.querySelectorAll(".chip");
+    for(const chip of chips){
+      const m = chip.textContent.match(/command:\s*(.+)/i);
+      if(m) return m[1].split(/\s*\/\s*/).map(s=>s.toLowerCase().trim());
+    }
+    return [];
+  }
+
+  function escHtml(s){ return (s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"})[c]); }
+
+  function render(){
+    ensureDom();
+    const qtext = document.getElementById("qtext");
+    const text = qtext ? qtext.textContent : "";
+    const term = detectCommandTerm(text);
+    const ov = document.getElementById("ctOverlay");
+    const s2 = document.getElementById("ctStep2");
+    if(!term){
+      if(ov) ov.style.display = "none";
+      if(s2) s2.style.display = "none";
+      return;
+    }
+    const T = COMMAND_TERMS[term];
+    const famTerms = getFamilyCmdTerms();
+    const matchFam = famTerms.some(ft => ft.includes(term) || term.includes(ft));
+    const mismatchMsg = (!matchFam && famTerms.length)
+      ? `<div style="margin-top:8px;background:#3a2a12;border:1px solid #6b4a1c;color:#ffdca7;padding:8px 10px;border-radius:6px;font-size:12.5px">
+          <strong>Heads-up:</strong> the question uses <em>${escHtml(T.label)}</em>, but the question family expects <em>${famTerms.map(escHtml).join(" / ")}</em>.
+          Trust the verb in the question — follow the <em>${escHtml(T.label)}</em> pattern below.
+        </div>` : "";
+    if(ov){
+      ov.style.display = "";
+      ov.innerHTML = `
+        <h3 style="margin:0 0 6px 0">Detected command term:
+          <span style="background:#7cc4ff;color:#06222f;padding:2px 8px;border-radius:4px;font-weight:700">${escHtml(T.label)}</span>
+          <span style="color:#9fb0c3;font-weight:500;font-size:12px">· ${escHtml(T.bloom)} · ${escHtml(T.band)} · typically ${T.typicalMarks.join(" / ")} marks</span>
+        </h3>
+        <p style="margin:4px 0"><strong>What it asks:</strong> ${escHtml(T.asks)}</p>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px">
+          <div><strong>Do</strong><ul style="margin:2px 0;padding-left:18px">${T.does.map(x=>`<li>${escHtml(x)}</li>`).join("")}</ul></div>
+          <div><strong>Don't</strong><ul style="margin:2px 0;padding-left:18px">${T.doesnt.map(x=>`<li>${escHtml(x)}</li>`).join("")}</ul></div>
+        </div>
+        ${mismatchMsg}
+      `;
+    }
+    if(s2){
+      s2.style.display = "";
+      s2.innerHTML = `
+        <h3 style="margin:0 0 6px 0">How to read <em>${escHtml(T.label)}</em> before writing</h3>
+        <p style="margin:4px 0"><strong>The exemplar's rule:</strong> ${escHtml(T.asks)}</p>
+        <p style="margin:4px 0"><strong>What a strong response sounds like:</strong><br><em>"${escHtml(T.strongExample)}"</em></p>
+        <p style="margin:4px 0"><strong>The trap to avoid:</strong> ${escHtml(T.weakTrap)}</p>
+      `;
+    }
+  }
+
+  function init(){
+    ensureDom();
+    render();
+    const qtext = document.getElementById("qtext");
+    const qhead = document.getElementById("qhead");
+    const obs = new MutationObserver(render);
+    if(qtext) obs.observe(qtext, {childList:true, characterData:true, subtree:true});
+    if(qhead) obs.observe(qhead, {childList:true, characterData:true, subtree:true});
+  }
+  if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
+  else init();
+})();
+</script>
+</body>
+</html>
