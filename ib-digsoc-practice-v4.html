@@ -1,0 +1,1177 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IB DigSoc — Exam Practice Studio</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+[data-theme="dark"]{
+  --bg:#0D0F1A;--surface:#13162A;--surface2:#1C2040;--surface3:#222646;--border:#272B4A;
+  --text:#E4E6F4;--text2:#9CA3C8;--muted:#6B70A0;--shadow:rgba(0,0,0,.6);
+  --gold:#E8B84B;--gold-dim:rgba(232,184,75,.12);--gold-border:rgba(232,184,75,.28);
+  --DEF:#F59E0B;--SH:#3B82F6;--EV:#10B981;--ARGP:#84CC16;--ARGM:#F43F5E;
+  --CB:#8B5CF6;--LINK:#F97316;--IMP:#06B6D4;
+  --ok:#10B981;--ok-bg:rgba(16,185,129,.08);--ok-bd:rgba(16,185,129,.25);
+  --warn:#F59E0B;--warn-bg:rgba(245,158,11,.08);--warn-bd:rgba(245,158,11,.3);
+  --err:#F43F5E;--err-bg:rgba(244,63,94,.08);--err-bd:rgba(244,63,94,.3);
+}
+[data-theme="light"]{
+  --bg:#F4F5FA;--surface:#FFFFFF;--surface2:#EEF0F8;--surface3:#E5E7F2;--border:#D4D7E8;
+  --text:#1A1D33;--text2:#4B5280;--muted:#7278A0;--shadow:rgba(0,0,0,.12);
+  --gold:#C9860A;--gold-dim:rgba(201,134,10,.1);--gold-border:rgba(201,134,10,.35);
+  --DEF:#B45309;--SH:#1D4ED8;--EV:#047857;--ARGP:#4D7C0F;--ARGM:#BE123C;
+  --CB:#6D28D9;--LINK:#C2410C;--IMP:#0E7490;
+  --ok:#047857;--ok-bg:rgba(4,120,87,.08);--ok-bd:rgba(4,120,87,.3);
+  --warn:#B45309;--warn-bg:rgba(180,83,9,.08);--warn-bd:rgba(180,83,9,.3);
+  --err:#BE123C;--err-bg:rgba(190,18,60,.08);--err-bd:rgba(190,18,60,.3);
+}
+html,body{height:100%;overflow:hidden}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);display:flex;flex-direction:column;transition:background .2s,color .2s}
+
+/* ── HEADER ── */
+header{height:50px;min-height:50px;background:var(--surface);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:8px;padding:0 12px;flex-shrink:0;position:relative;z-index:20}
+.logo{font-family:'Playfair Display',serif;font-size:15px;color:var(--gold);white-space:nowrap;flex-shrink:0}
+.logo em{font-style:normal;font-family:'DM Sans',sans-serif;font-size:10px;color:var(--muted);font-weight:400;margin-left:5px}
+.h-sep{width:1px;height:20px;background:var(--border);flex-shrink:0;margin:0 2px}
+
+/* paper tabs */
+.ptabs{display:flex;gap:3px;flex-shrink:0}
+.ptab{padding:5px 12px;border-radius:6px;border:1px solid var(--border);background:transparent;
+  color:var(--muted);cursor:pointer;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:600;
+  transition:all .15s;white-space:nowrap}
+.ptab:hover{border-color:var(--gold);color:var(--text)}
+.ptab.on{background:var(--gold-dim);border-color:var(--gold);color:var(--gold)}
+
+/* question tabs */
+.qtabs{display:flex;gap:3px;flex-shrink:0}
+.qtab{padding:5px 10px;border-radius:5px;border:1px solid transparent;background:transparent;
+  color:var(--muted);cursor:pointer;font-family:'DM Mono',monospace;font-size:10px;font-weight:500;
+  transition:all .15s;white-space:nowrap}
+.qtab:hover{color:var(--text);background:var(--surface2)}
+.qtab.on{background:var(--gold);color:#0D0F1A;border-color:var(--gold);font-weight:700}
+
+.h-space{flex:1;min-width:0}
+.saved-badge{font-size:10px;padding:3px 9px;border-radius:20px;border:1px solid;
+  white-space:nowrap;display:none;flex-shrink:0}
+.saved-badge.restored{color:var(--IMP);border-color:var(--IMP);background:rgba(6,182,212,.08);display:inline}
+.saved-badge.snapshot{color:var(--ok);border-color:var(--ok-bd);background:var(--ok-bg);display:inline}
+.export-btn{padding:0 13px;height:32px;border:1px solid var(--ok);border-radius:7px;
+  background:var(--ok-bg);color:var(--ok);cursor:pointer;font-family:'DM Sans',sans-serif;
+  font-size:11px;font-weight:700;transition:all .15s;white-space:nowrap;display:flex;align-items:center;gap:5px;flex-shrink:0}
+.export-btn:hover{background:rgba(16,185,129,.18)}
+.export-btn:disabled{opacity:.35;cursor:not-allowed}
+.icon-btn{width:32px;height:32px;border:1px solid var(--border);border-radius:7px;background:var(--surface2);
+  cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;
+  transition:all .15s;flex-shrink:0;color:var(--text)}
+.icon-btn:hover{border-color:var(--gold)}
+.help-btn{padding:0 11px;height:32px;border:1px solid var(--border);border-radius:7px;
+  background:transparent;color:var(--muted);cursor:pointer;font-family:'DM Sans',sans-serif;
+  font-size:11px;font-weight:600;transition:all .15s;white-space:nowrap;flex-shrink:0}
+.help-btn:hover{border-color:var(--IMP);color:var(--IMP)}
+
+/* ── MODAL ── */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:100;
+  display:none;align-items:center;justify-content:center;padding:20px}
+.modal-bg.vis{display:flex}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:14px;
+  max-width:640px;width:100%;max-height:90vh;overflow-y:auto;padding:26px;
+  box-shadow:0 20px 60px var(--shadow)}
+.modal h2{font-family:'Playfair Display',serif;font-size:20px;color:var(--gold);margin-bottom:3px}
+.modal-sub{font-size:11px;color:var(--muted);margin-bottom:20px}
+.step{display:flex;gap:13px;margin-bottom:16px;align-items:flex-start}
+.step-n{width:26px;height:26px;border-radius:50%;background:var(--gold);font-weight:700;font-size:12px;
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;font-family:'Playfair Display',serif;color:#0D0F1A}
+.step-body h3{font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px}
+.step-body p{font-size:12px;color:var(--muted);line-height:1.6}
+.step-body p+p{margin-top:5px}
+.sgrid{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin:10px 0 12px}
+.sg-item{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted)}
+.sg-badge{padding:2px 6px;border-radius:3px;font-size:9px;font-weight:700;color:#0D0F1A;flex-shrink:0}
+.modal-notice{border-radius:8px;padding:11px;margin:12px 0;font-size:11px;line-height:1.6}
+.modal-notice.green{background:var(--ok-bg);border:1px solid var(--ok-bd);color:var(--ok)}
+.modal-notice.red{background:var(--err-bg);border:1px solid var(--err-bd);color:var(--err)}
+.modal-notice h4{font-size:10px;text-transform:uppercase;letter-spacing:.08em;font-weight:700;margin-bottom:5px}
+.modal-notice p{color:var(--muted)}
+.modal-close{width:100%;padding:10px;background:var(--gold);color:#0D0F1A;border:none;
+  border-radius:8px;cursor:pointer;font-family:'DM Sans',sans-serif;font-size:13px;
+  font-weight:700;margin-top:16px;transition:opacity .15s}
+.modal-close:hover{opacity:.85}
+
+/* ── LAYOUT ── */
+.app{display:grid;grid-template-columns:1fr 370px;flex:1;overflow:hidden}
+
+/* ── LEFT: VIEWER ── */
+.left{display:flex;flex-direction:column;border-right:1px solid var(--border);overflow:hidden}
+.stamp-bar{background:var(--surface);border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:7px;padding:7px 12px;flex-shrink:0;flex-wrap:wrap}
+.sb-label{font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);font-weight:600;white-space:nowrap}
+.stamps-row{display:flex;gap:4px;flex-wrap:wrap;flex:1}
+.s-btn{padding:4px 8px;border-radius:5px;border:1.5px solid;cursor:pointer;
+  font-size:10px;font-weight:700;font-family:'DM Sans',sans-serif;transition:all .15s;
+  background:transparent;letter-spacing:.04em;white-space:nowrap}
+.s-btn[data-s="DEF"] {color:var(--DEF);border-color:var(--DEF)}
+.s-btn[data-s="SH"]  {color:var(--SH);border-color:var(--SH)}
+.s-btn[data-s="EV"]  {color:var(--EV);border-color:var(--EV)}
+.s-btn[data-s="ARG+"]{color:var(--ARGP);border-color:var(--ARGP)}
+.s-btn[data-s="ARG-"]{color:var(--ARGM);border-color:var(--ARGM)}
+.s-btn[data-s="CB"]  {color:var(--CB);border-color:var(--CB)}
+.s-btn[data-s="LINK"]{color:var(--LINK);border-color:var(--LINK)}
+.s-btn[data-s="IMP"] {color:var(--IMP);border-color:var(--IMP)}
+.s-btn:hover,.s-btn.on{color:#0D0F1A!important}
+[data-theme="light"] .s-btn:hover,[data-theme="light"] .s-btn.on{color:#fff!important}
+.s-btn[data-s="DEF"]:hover,.s-btn[data-s="DEF"].on{background:var(--DEF)!important}
+.s-btn[data-s="SH"]:hover,.s-btn[data-s="SH"].on  {background:var(--SH)!important}
+.s-btn[data-s="EV"]:hover,.s-btn[data-s="EV"].on  {background:var(--EV)!important}
+.s-btn[data-s="ARG+"]:hover,.s-btn[data-s="ARG+"].on{background:var(--ARGP)!important}
+.s-btn[data-s="ARG-"]:hover,.s-btn[data-s="ARG-"].on{background:var(--ARGM)!important}
+.s-btn[data-s="CB"]:hover,.s-btn[data-s="CB"].on  {background:var(--CB)!important}
+.s-btn[data-s="LINK"]:hover,.s-btn[data-s="LINK"].on{background:var(--LINK)!important}
+.s-btn[data-s="IMP"]:hover,.s-btn[data-s="IMP"].on {background:var(--IMP)!important}
+.mode-pill{font-size:10px;color:var(--ARGM);background:rgba(244,63,94,.08);
+  border:1px solid rgba(244,63,94,.25);padding:3px 9px;border-radius:20px;display:none;white-space:nowrap}
+.mode-pill.vis{display:inline}
+.nav-row{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--muted);white-space:nowrap}
+.nav-row button{width:21px;height:21px;background:var(--surface2);border:1px solid var(--border);
+  border-radius:4px;color:var(--text);cursor:pointer;font-size:13px;display:flex;align-items:center;justify-content:center}
+.nav-row button:disabled{opacity:.3;cursor:not-allowed}
+.upload-btn{padding:5px 11px;background:var(--gold);color:#0D0F1A;border:none;border-radius:6px;
+  cursor:pointer;font-family:'DM Sans',sans-serif;font-size:11px;font-weight:700;transition:all .15s;white-space:nowrap}
+.upload-btn:hover{opacity:.85}
+#fileIn{display:none}
+
+.viewer{flex:1;overflow:auto;background:var(--bg);display:flex;align-items:flex-start;justify-content:center;padding:20px;transition:background .2s}
+.doc-wrap{position:relative;display:inline-block}
+#pdfCanvas{display:block;box-shadow:0 8px 40px var(--shadow);border-radius:3px;max-width:100%}
+#imgView{display:none;max-width:100%;box-shadow:0 8px 40px var(--shadow);border-radius:3px}
+.overlay{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none}
+.overlay.placing{pointer-events:all;cursor:crosshair}
+.stag{position:absolute;transform:translate(-50%,-50%);padding:3px 7px;border-radius:4px;
+  font-size:10px;font-weight:700;cursor:move;pointer-events:all;user-select:none;
+  white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,.4);z-index:10;color:#0D0F1A}
+[data-theme="light"] .stag{color:#fff}
+.stag .x{margin-left:4px;opacity:.5;font-size:11px;cursor:pointer}
+.stag:hover .x{opacity:1}
+.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;
+  min-height:100%;min-width:400px;gap:12px;color:var(--muted);text-align:center;padding:40px}
+.empty-icon{font-size:44px;opacity:.22}
+.empty h3{font-family:'Playfair Display',serif;font-size:20px;color:var(--text)}
+.empty p{font-size:12px;max-width:260px;line-height:1.6}
+.empty .tip{font-size:11px;opacity:.5;font-style:italic}
+
+/* ── RIGHT PANEL ── */
+.right{display:flex;flex-direction:column;background:var(--surface);overflow:hidden}
+.r-tabs{display:flex;border-bottom:1px solid var(--border);flex-shrink:0}
+.r-tab{flex:1;padding:11px 4px;background:none;border:none;color:var(--muted);cursor:pointer;
+  font-family:'DM Sans',sans-serif;font-size:11px;font-weight:600;text-transform:uppercase;
+  letter-spacing:.08em;transition:all .15s;border-bottom:2px solid transparent}
+.r-tab:hover{color:var(--text)}
+.r-tab.on{color:var(--gold);border-bottom-color:var(--gold)}
+.r-panel{flex:1;overflow-y:auto;padding:15px}
+.pane{display:none}.pane.on{display:block}
+
+/* ── RUBRIC ── */
+.r-title{font-family:'Playfair Display',serif;font-size:14px;color:var(--gold);margin-bottom:2px}
+.r-sub{font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.5}
+.r-notice{background:var(--gold-dim);border:1px solid var(--gold-border);border-radius:7px;
+  padding:9px 11px;margin-bottom:11px;font-size:11px;color:var(--text);line-height:1.5}
+.r-notice strong{color:var(--gold)}
+.r-notice.red{background:var(--err-bg);border-color:var(--err-bd);color:var(--err)}
+.r-notice.red strong{color:var(--err)}
+.r-notice.green{background:var(--ok-bg);border-color:var(--ok-bd);color:var(--ok)}
+.r-notice.green strong{color:var(--ok)}
+.rband{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px;margin-bottom:6px;transition:background .15s}
+.rband:hover{background:var(--surface3)}
+.rband-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;gap:8px}
+.rlvl{font-size:11px;font-weight:600;color:var(--text)}
+.rmarks{padding:2px 7px;border-radius:4px;font-size:9px;font-weight:700;white-space:nowrap}
+.rm-gold{background:var(--gold);color:#0D0F1A}
+.rm-ok{background:var(--ok);color:#fff}
+.rm-warn{background:var(--warn);color:#0D0F1A}
+.rm-err{background:var(--err);color:#fff}
+.rm-muted{background:var(--surface3);color:var(--muted)}
+.rdesc{font-size:11px;color:var(--muted);line-height:1.6}
+.rdesc li{margin-left:14px;margin-bottom:2px}
+.cap-tag{display:inline-block;font-size:9px;font-weight:700;padding:1px 6px;border-radius:3px;
+  background:var(--err-bg);color:var(--err);border:1px solid var(--err-bd);margin-top:4px}
+.rtips{background:var(--gold-dim);border:1px solid var(--gold-border);border-radius:8px;padding:10px;margin-top:10px}
+.rtips-title{font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--gold);font-weight:700;margin-bottom:5px}
+.rtips ul{padding-left:13px;font-size:11px;color:var(--muted);line-height:1.8}
+.rauth{background:rgba(6,182,212,.05);border:1px solid rgba(6,182,212,.15);border-radius:7px;
+  padding:8px 10px;margin-top:8px;font-size:10px;color:var(--muted);line-height:1.5}
+.rauth strong{color:var(--IMP)}
+
+/* ── CHECKLIST ── */
+.leg-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:11px}
+.leg-item{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--muted)}
+.leg-badge{padding:1px 5px;border-radius:3px;font-size:9px;font-weight:700;color:#0D0F1A;flex-shrink:0}
+[data-theme="light"] .leg-badge{color:#fff}
+.cl-meta{font-size:11px;color:var(--muted);display:flex;justify-content:space-between;margin-bottom:4px}
+.pbar-wrap{background:var(--surface2);border-radius:100px;height:5px;margin-bottom:13px;overflow:hidden}
+.pbar{height:100%;background:var(--gold);border-radius:100px;transition:width .3s;width:0%}
+.cl-section{margin-bottom:12px}
+.cl-sec-title{font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);
+  font-weight:700;margin-bottom:5px;padding-bottom:4px;border-bottom:1px solid var(--border)}
+.ci{display:flex;align-items:flex-start;gap:8px;padding:6px 0;border-bottom:1px solid rgba(39,43,74,.22)}
+[data-theme="light"] .ci{border-bottom-color:rgba(212,215,232,.5)}
+.ci:last-child{border-bottom:none}
+.ci input[type=checkbox]{appearance:none;-webkit-appearance:none;width:14px;height:14px;
+  border:1.5px solid var(--border);border-radius:3px;cursor:pointer;flex-shrink:0;margin-top:2px;
+  transition:all .15s;background:var(--bg)}
+.ci input:checked{background:var(--gold);border-color:var(--gold);
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2 6l3 3 5-5' stroke='%230D0F1A' stroke-width='2' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+  background-size:contain}
+.ci-label{font-size:11px;color:var(--text);line-height:1.45;cursor:pointer}
+.ci input:checked~.ci-label{color:var(--muted);text-decoration:line-through}
+.sbadge{display:inline-block;padding:1px 4px;border-radius:3px;font-size:8px;
+  font-weight:700;color:#0D0F1A;margin-right:3px;vertical-align:middle}
+[data-theme="light"] .sbadge{color:#fff}
+.cl-notes-label{font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);font-weight:700;margin:14px 0 5px}
+.cl-notes{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:7px;
+  padding:8px 10px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:11px;
+  resize:vertical;min-height:70px;outline:none;transition:border .15s;line-height:1.6}
+.cl-notes:focus{border-color:var(--gold)}
+.cl-notes::placeholder{color:var(--muted)}
+
+/* ── SCORE TAB ── */
+.score-display{text-align:center;padding:18px 14px 14px;border-bottom:1px solid var(--border);margin:-15px -15px 15px}
+.score-lbl{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.score-big{font-family:'Playfair Display',serif;font-size:48px;font-weight:700;line-height:1;color:var(--text)}
+.score-big .denom{font-size:24px;color:var(--muted)}
+.score-band-lbl{font-size:12px;color:var(--muted);margin-top:6px;min-height:18px}
+.score-bar-wrap{margin-bottom:14px}
+.score-bar-lbl{font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;
+  color:var(--muted);margin-bottom:5px;display:flex;justify-content:space-between}
+.score-track{height:7px;background:var(--surface2);border-radius:100px;overflow:hidden}
+.score-fill{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--ok),#34D399);transition:width .4s ease}
+
+.caps-section{margin-bottom:14px}
+.caps-title{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:7px}
+.cap-toggle{display:flex;align-items:flex-start;gap:9px;padding:9px 11px;border-radius:7px;
+  cursor:pointer;border:1px solid var(--border);margin-bottom:5px;background:transparent;
+  transition:all .15s;text-align:left;width:100%}
+.cap-toggle:hover{background:var(--surface2)}
+.cap-toggle.triggered{background:var(--err-bg);border-color:var(--err-bd)}
+.cap-cb{width:15px;height:15px;border:1.5px solid var(--border);border-radius:4px;flex-shrink:0;
+  margin-top:1px;display:flex;align-items:center;justify-content:center;background:transparent;transition:all .15s}
+.cap-toggle.triggered .cap-cb{background:var(--err);border-color:var(--err)}
+.cap-cb svg{display:none}
+.cap-toggle.triggered .cap-cb svg{display:block}
+.cap-text{font-size:11px;line-height:1.45;color:var(--text2);font-family:'DM Sans',sans-serif}
+.cap-toggle.triggered .cap-text{color:var(--err)}
+.cap-result{font-weight:700;display:none;margin-top:3px;font-size:10px;color:var(--err)}
+.cap-toggle.triggered .cap-result{display:block}
+
+.score-alert{border-radius:7px;padding:10px 11px;font-size:11px;line-height:1.55;margin-bottom:8px}
+.score-alert.err{background:var(--err-bg);border:1px solid var(--err-bd);color:var(--err)}
+.score-alert.warn{background:var(--warn-bg);border:1px solid var(--warn-bd);color:var(--warn)}
+
+/* ── SCROLLBAR ── */
+::-webkit-scrollbar{width:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+</style>
+</head>
+<body>
+
+<!-- MODAL -->
+<div class="modal-bg" id="modalBg" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <h2>How to Use This Tool</h2>
+    <p class="modal-sub">IB Digital Society Exam Practice Studio — Annotation, Rubric & Self-Assessment</p>
+    <div class="step">
+      <div class="step-n">1</div>
+      <div class="step-body">
+        <h3>Select your paper and question type</h3>
+        <p>Use <strong>Paper 1 / Paper 2</strong> to switch papers, then click the question type — <strong>2pt, 6pt, 8pt</strong> for Paper 1 or <strong>2pt, 4pt, 6pt, 12pt</strong> for Paper 2. The rubric, checklist and score calculator update automatically.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-n">2</div>
+      <div class="step-body">
+        <h3>Upload your answer</h3>
+        <p>Click <strong>Upload ↑</strong> to choose a PDF, photo, or screenshot of your answer. Google Docs → File → Download → PDF document. Handwritten? Take a clear photo.</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-n">3</div>
+      <div class="step-body">
+        <h3>Annotate with stamps</h3>
+        <p>Click a stamp button to activate it, then click anywhere on your answer to place it. Press <strong>ESC</strong> to cancel. <strong>Drag</strong> stamps to reposition. <strong>Double-click ×</strong> to remove one.</p>
+        <div class="sgrid">
+          <div class="sg-item"><span class="sg-badge" style="background:#F59E0B">DEF</span>Definition of key term</div>
+          <div class="sg-item"><span class="sg-badge" style="background:#3B82F6">SH</span>Stakeholder named</div>
+          <div class="sg-item"><span class="sg-badge" style="background:#10B981">EV</span>Evidence / example</div>
+          <div class="sg-item"><span class="sg-badge" style="background:#84CC16">ARG+</span>Argument for</div>
+          <div class="sg-item"><span class="sg-badge" style="background:#F43F5E">ARG−</span>Counter-claim</div>
+          <div class="sg-item"><span class="sg-badge" style="background:#8B5CF6">CB</span>Cost–benefit analysis</div>
+          <div class="sg-item"><span class="sg-badge" style="background:#F97316">LINK</span>Link to Q / sources</div>
+          <div class="sg-item"><span class="sg-badge" style="background:#06B6D4">IMP</span>Impact / implication</div>
+        </div>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-n">4</div>
+      <div class="step-body">
+        <h3>Use the Checklist &amp; Score tabs</h3>
+        <p>Switch to <strong>Checklist</strong> to tick every element present in your answer. Switch to <strong>Score</strong> to see your estimated band — and to check whether a hard cap applies (one-sided response, categorical conclusion, or source issues).</p>
+      </div>
+    </div>
+    <div class="step">
+      <div class="step-n">5</div>
+      <div class="step-body">
+        <h3>Export your work</h3>
+        <p>Click <strong>↓ Export</strong>. A single self-contained HTML file downloads with your answer, stamps, checklist ticks, notes, and score — everything preserved. Re-open it to continue editing or share with your teacher.</p>
+      </div>
+    </div>
+    <div class="modal-notice green">
+      <h4>💾 About Exporting</h4>
+      <p>Exported files work offline — no internet needed. Your image is embedded. You can re-export to update.</p>
+    </div>
+    <div class="modal-notice red">
+      <h4>⚠ About the Rubrics &amp; Scores</h4>
+      <p>The <strong>8pt</strong> (P1c) and <strong>12pt</strong> (P2 Q4) band descriptors use official IB wording. The <strong>6pt</strong> (P1b) uses the IB 4-band markband. The <strong>2pt and 4pt</strong> questions use point-based marking. Score estimates are indicative — always verify with your teacher.</p>
+    </div>
+    <button class="modal-close" onclick="closeModal()">Got it — Let's Practice</button>
+  </div>
+</div>
+
+<!-- HEADER -->
+<header>
+  <div class="logo">IB DigSoc <em>/ Exam Practice Studio</em></div>
+  <div class="h-sep"></div>
+  <div class="ptabs">
+    <button class="ptab on" id="pt-p1" onclick="setPaper('p1')">Paper 1</button>
+    <button class="ptab"    id="pt-p2" onclick="setPaper('p2')">Paper 2</button>
+  </div>
+  <div class="h-sep"></div>
+  <div class="qtabs" id="qtabs"></div>
+  <div class="h-space"></div>
+  <span class="saved-badge" id="savedBadge"></span>
+  <button class="export-btn" id="exportBtn" onclick="exportSnapshot()" disabled>↓ Export</button>
+  <button class="icon-btn" id="themeBtn" onclick="toggleTheme()" title="Toggle light/dark">🌙</button>
+  <button class="help-btn" onclick="openModal()">? How to Use</button>
+</header>
+
+<!-- APP -->
+<div class="app">
+  <!-- LEFT: VIEWER -->
+  <div class="left">
+    <div class="stamp-bar">
+      <span class="sb-label">Annotate</span>
+      <div class="stamps-row">
+        <button class="s-btn" data-s="DEF"  onclick="activateStamp(this)">DEF</button>
+        <button class="s-btn" data-s="SH"   onclick="activateStamp(this)">SH</button>
+        <button class="s-btn" data-s="EV"   onclick="activateStamp(this)">EV</button>
+        <button class="s-btn" data-s="ARG+" onclick="activateStamp(this)">ARG+</button>
+        <button class="s-btn" data-s="ARG-" onclick="activateStamp(this)">ARG−</button>
+        <button class="s-btn" data-s="CB"   onclick="activateStamp(this)">CB</button>
+        <button class="s-btn" data-s="LINK" onclick="activateStamp(this)">LINK</button>
+        <button class="s-btn" data-s="IMP"  onclick="activateStamp(this)">IMP</button>
+      </div>
+      <span class="mode-pill" id="modePill">Click to place · ESC cancel</span>
+      <div class="nav-row">
+        <button id="prevP" onclick="goPage(-1)" disabled>‹</button>
+        <span id="pageInfo">—</span>
+        <button id="nextP" onclick="goPage(1)"  disabled>›</button>
+      </div>
+      <button class="upload-btn" onclick="document.getElementById('fileIn').click()">Upload ↑</button>
+      <input type="file" id="fileIn" accept=".pdf,image/*" onchange="onUpload(event)">
+    </div>
+
+    <div class="viewer">
+      <div class="empty" id="emptyMsg">
+        <div class="empty-icon">📝</div>
+        <h3>Upload Your Answer</h3>
+        <p>Upload a PDF or photo of your response to start annotating and self-assessing.</p>
+        <p class="tip">Google Docs → File → Download → PDF document</p>
+        <button class="upload-btn" style="margin-top:10px" onclick="document.getElementById('fileIn').click()">Choose File</button>
+      </div>
+      <div class="doc-wrap" id="docWrap" style="display:none">
+        <canvas id="pdfCanvas"></canvas>
+        <img id="imgView" alt="Answer">
+        <div class="overlay" id="overlay" onclick="placeStamp(event)"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT: PANEL -->
+  <div class="right">
+    <div class="r-tabs">
+      <button class="r-tab on"  onclick="switchTab('rubric',this)">Rubric</button>
+      <button class="r-tab"     onclick="switchTab('checklist',this)">Checklist</button>
+      <button class="r-tab"     onclick="switchTab('score',this)">Score</button>
+    </div>
+    <div class="r-panel">
+      <div class="pane on" id="pane-rubric"></div>
+      <div class="pane"    id="pane-checklist"></div>
+      <div class="pane"    id="pane-score"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ────────────────────────────────────────────────────────────
+// SAVED STATE (injected on export)
+// ────────────────────────────────────────────────────────────
+const SAVED_STATE = null;
+
+if(typeof pdfjsLib!=='undefined')
+  pdfjsLib.GlobalWorkerOptions.workerSrc='https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+
+const COLORS={
+  DEF:'#F59E0B',SH:'#3B82F6',EV:'#10B981','ARG+':'#84CC16','ARG-':'#F43F5E',
+  CB:'#8B5CF6',LINK:'#F97316',IMP:'#06B6D4'
+};
+const LABELS={
+  DEF:'Definition',SH:'Stakeholder',EV:'Evidence',
+  'ARG+':'Argument For','ARG-':'Counter-claim',CB:'Cost–Benefit',LINK:'Link/Sources',IMP:'Impact'
+};
+
+const S={
+  paper:'p1', qtype:'p1-2pt', activeStamp:null, stamps:[], stampN:0,
+  pdfDoc:null, page:1, pages:0, fileType:null, imageDataURL:null, caps:{}
+};
+
+// ────────────────────────────────────────────────────────────
+// DATA — RUBRICS
+// ────────────────────────────────────────────────────────────
+const RUBRICS={
+  'p1-2pt':{
+    title:'Paper 1 — Part (a) Knowledge & Understanding',
+    cmd:'State · Identify · Outline',
+    ao:'AO1 — 2 marks · Point-based',
+    notice:'These questions use <strong>point-based marking</strong> — no band descriptors. Award [1] per acceptable, distinct point up to [2]. For "Outline": [1] for identification + [1] for brief explanation.',
+    noticeType:'',
+    bands:[
+      {l:'2 marks',m:'2',mc:'rm-gold',d:'Two correct, distinct, specific points. For "Outline": identification + brief explanation for each.'},
+      {l:'1 mark',m:'1',mc:'rm-warn',d:'One correct point. OR both points present but not distinct / too vague.'},
+      {l:'0 marks',m:'0',mc:'rm-muted',d:'No creditworthy response. Incorrect or off-topic.'}
+    ],
+    caps:[],
+    tips:[
+      'Two answers must be <em>distinct</em> — two versions of the same idea earn only [1]',
+      'Always name the specific component, not just the category. "Computer" ✗ → "monitor / screen" ✓',
+      'For "Outline": answer structure = [what it is] + [why it matters or what it causes]',
+      'Answers must be relevant to the <em>scenario context</em>, not just generic knowledge',
+      'For (a.iii) questions: both parts of the outline are needed for full marks — identification alone = [1]'
+    ],
+    auth:'Point-based marking based on IB Digital Society specimen markschemes.'
+  },
+  'p1-6pt':{
+    title:'Paper 1 — Part (b) Analyse',
+    cmd:'Analyse',
+    ao:'AO2 — 6 marks · 4-band markband',
+    notice:'<strong>Hard rule:</strong> One-sided responses (only FOR or only AGAINST, without engaging the opposing view) are capped at <strong>Band 3 (1–2 marks)</strong> regardless of argument quality.',
+    noticeType:'red',
+    bands:[
+      {l:'Band 1 — Excellent',m:'5–6',mc:'rm-ok',d:'Balanced analysis. Both sides argued with genuine development. Explicit and relevant scenario references. Appropriate DS terminology throughout. Attempts to weigh arguments against each other.'},
+      {l:'Band 2 — Adequate',m:'3–4',mc:'rm-gold',d:'Both sides addressed with some development. Some scenario reference. Limited weighing of arguments.'},
+      {l:'Band 3 — Limited',m:'1–2',mc:'rm-warn',d:'One-sided OR generic with no scenario reference. Points identified but not developed. <div class="cap-tag">ONE-SIDED CAP — MAX 1–2</div>'},
+      {l:'Band 4 — No Response',m:'0',mc:'rm-muted',d:'No response or wholly irrelevant.'}
+    ],
+    caps:[
+      {label:'Response is one-sided — only argued FOR or only AGAINST without engaging the opposing view',capMark:2,type:'err',msg:'⚠ One-sided cap applied: maximum Band 3 (1–2 marks).'}
+    ],
+    tips:[
+      'The jump from Band 2 to Band 1 is <em>weighing</em> — "this outweighs X because..." or a middle-ground solution',
+      'Scenario reference must be specific: name the location, quote the figure, name the organisation',
+      'Every argument needs a WHY/HOW chain: claim → mechanism → consequence for [stakeholder]',
+      'Name at least one DS keyword per paragraph: false positive/negative, re-identification, accountability, consent',
+      'A telemedicine / middle-ground type answer that resolves the tension is classic Band 1 thinking'
+    ],
+    auth:'IB Digital Society 4-band markband for Paper 1 Part (b) [6 marks].'
+  },
+  'p1-8pt':{
+    title:'Paper 1 — Part (c) Evaluate / To What Extent / Discuss',
+    cmd:'To what extent · Evaluate · Discuss',
+    ao:'AO2/AO3 — 8 marks · Official IB 5-level markband',
+    notice:'<strong>Hard block on 7–8:</strong> Categorical conclusions ("AI should <em>never</em>...", "always", "completely", "totally") prevent Band 1. The conclusion <em>must</em> be conditional: "to the extent that..." / "only if..." / "provided that..."',
+    noticeType:'red',
+    bands:[
+      {l:'In-depth',m:'7–8',mc:'rm-ok',d:'<ul><li>The response is focused and demonstrates an in-depth understanding of the demands of the question</li><li>The response demonstrates sustained evaluation and synthesis that is effectively and consistently supported with relevant and accurate knowledge</li><li>The response is well-structured and effectively organised</li></ul>'},
+      {l:'Adequate',m:'5–6',mc:'rm-gold',d:'<ul><li>The response shows adequate understanding of the demands of the question</li><li>The response demonstrates adequate and effective analysis supported with relevant and accurate knowledge</li><li>The response is adequately organised</li></ul>'},
+      {l:'Partial',m:'3–4',mc:'rm-warn',d:'<ul><li>The response shows some understanding of the demands of the question</li><li>Some relevant knowledge is demonstrated but not always accurate or used effectively. Moves beyond description to include some analysis, but not always sustained</li><li>The response is partially organised</li></ul>'},
+      {l:'Limited',m:'1–2',mc:'rm-warn',d:'<ul><li>The response shows limited understanding of the demands of the question</li><li>There is limited relevant knowledge. The response is descriptive and consists mostly of unsupported generalisations</li><li>The response has limited organisation or is only a list of items</li></ul>'},
+      {l:'No Response',m:'0',mc:'rm-muted',d:'Does not reach a standard described by the descriptors.'}
+    ],
+    caps:[
+      {label:'Used categorical language in conclusion: "never", "always", "completely", "totally", or absolute yes/no',capMark:6,type:'err',msg:'⚠ Categorical conclusion: Band 1 (7–8) is blocked. Maximum 5–6.'}
+    ],
+    tips:[
+      'The accountability question — who is responsible when the system errs? — is almost always a Band 1 requirement',
+      'Name at least two distinct stakeholder groups and show <em>different</em> impacts for each',
+      'Import your (b) arguments into (c) as the counter-argument — contradicting your own (b) loses marks',
+      'Any figure in the stimulus (84% confidence score, US$2M ransom, 30-second transmission) is an evaluative data hook — unused figures are a Band 1 gap',
+      'Structure: intro → evidence FOR → evidence AGAINST → weighed conditional conclusion'
+    ],
+    auth:'Official IB Digital Society Paper 1 Part (c) markbands — first assessment May 2024.'
+  },
+  'p2-2pt':{
+    title:'Paper 2 — Question 1 Identify / State',
+    cmd:'Identify · State · Outline',
+    ao:'AO1 — 2 marks · Point-based, source reference required',
+    notice:'Both points must come from the <strong>specified source</strong>. The question will specify which source — you cannot answer from general knowledge alone.',
+    noticeType:'',
+    bands:[
+      {l:'2 marks',m:'2',mc:'rm-gold',d:'Two correct, distinct features from the specified source. Specific and accurate.'},
+      {l:'1 mark',m:'1',mc:'rm-warn',d:'One correct point from the source. OR both points present but not distinct.'},
+      {l:'0 marks',m:'0',mc:'rm-muted',d:'No source reference. Incorrect, vague, or off-topic.'}
+    ],
+    caps:[],
+    tips:[
+      'Read the source carefully before answering — Q1 targets details only available in the source',
+      'Keep answers precise and factual — no analysis or opinions needed at this level',
+      'Both answers must be distinct features, not two versions of the same point',
+      'Short, specific, accurate responses maximise marks here'
+    ],
+    auth:'Point-based marking based on IB Digital Society specimen Paper 2 markschemes.'
+  },
+  'p2-4pt':{
+    title:'Paper 2 — Question 2 Suggest / Explain / Analyse',
+    cmd:'Suggest · Explain · Analyse',
+    ao:'AO2 — 4 marks · Point-based, 2 × [1+1]',
+    notice:'Structure: <strong>[1]</strong> for identifying the reason + <strong>[1]</strong> for developing its impact/consequence with source evidence = [2] per point, [4] total.',
+    noticeType:'',
+    bands:[
+      {l:'4 marks',m:'4',mc:'rm-ok',d:'Two well-developed points with source evidence. Clear development/consequence for each. Specific and accurate.'},
+      {l:'2–3 marks',m:'2–3',mc:'rm-gold',d:'One point well-developed with source evidence. Second point identified but development weak. OR both points partially developed.'},
+      {l:'1 mark',m:'1',mc:'rm-warn',d:'One correct point identified with minimal development. Source reference weak or absent.'},
+      {l:'0 marks',m:'0',mc:'rm-muted',d:'No source integration. Reasons too generic. No creditworthy response.'}
+    ],
+    caps:[],
+    tips:[
+      'Development sentence starters: "This means that...", "As a result...", "This affects [stakeholder] because..."',
+      'Both reasons must be clearly distinct — if they overlap, only [1] may be credited for that pair',
+      '"Suggest" means plausible and source-grounded — you need evidence to anchor the suggestion',
+      'Generic knowledge alone is insufficient — each point should reference specific data from the named source'
+    ],
+    auth:'Point-based analytic marking based on IB Digital Society specimen Paper 2 markschemes.'
+  },
+  'p2-6pt':{
+    title:'Paper 2 — Question 3 Compare / Contrast / Both',
+    cmd:'Compare · Contrast · Compare and contrast',
+    ao:'AO3 — 6 marks · Point-based with hard caps',
+    notice:'<strong>Two hard caps:</strong> (1) Sources discussed separately — not in continuous comparison — max <strong>4/6</strong>. (2) Only one source discussed — max <strong>3/6</strong>.',
+    noticeType:'red',
+    bands:[
+      {l:'6 marks',m:'6',mc:'rm-ok',d:'Three or more well-developed comparison points. Both sources continuously integrated. Comparison language used effectively. Each point developed to show significance.'},
+      {l:'4–5 marks',m:'4–5',mc:'rm-gold',d:'Two or more comparison points with development. Sources referenced but may drift into sequential treatment at times. <div class="cap-tag">SEPARATE TREATMENT — MAX 4</div>'},
+      {l:'2–3 marks',m:'2–3',mc:'rm-warn',d:'Points underdeveloped OR sources discussed separately OR only one source discussed. <div class="cap-tag">ONE SOURCE — MAX 3</div>'},
+      {l:'0–1 marks',m:'0–1',mc:'rm-muted',d:'Basic listing only. Minimal source reference. No genuine comparative analysis.'}
+    ],
+    caps:[
+      {label:'Sources discussed separately — Source C in one block, then Source D in another block (not continuously integrated)',capMark:4,type:'warn',msg:'⚠ Sequential treatment: maximum 4/6.'},
+      {label:'Only one source was discussed in the response',capMark:3,type:'err',msg:'⚠ Only one source: maximum 3/6.'}
+    ],
+    tips:[
+      'Comparison language every sentence: whereas / in contrast / similarly / both sources / however / unlike',
+      'For "compare and contrast" — aim for at least 1 similarity AND 2 differences (or vice versa)',
+      'Each comparison must say what the difference/similarity <em>demonstrates</em> — "This suggests..." / "This reveals..."',
+      '3 well-developed comparison points = 6 marks — plan them before writing',
+      '"Source C states X, whereas Source D argues Y, suggesting that both sources agree on Z but diverge on..."'
+    ],
+    auth:'Point-based marking with hard caps based on IB Digital Society specimen Paper 2 markschemes.'
+  },
+  'p2-12pt':{
+    title:'Paper 2 — Question 4 Discuss / Evaluate / To What Extent',
+    cmd:'Discuss · Evaluate · To what extent · Recommend',
+    ao:'AO2/AO3 — 12 marks · Official IB 4-band holistic markband',
+    notice:'The critical differentiator for <strong>10–12</strong> is <em>consistent and effective</em> source integration throughout the entire response — not just mentioning sources, but building arguments from them.',
+    noticeType:'',
+    bands:[
+      {l:'In-depth',m:'10–12',mc:'rm-ok',d:'<ul><li>The response is focused and shows an in-depth understanding of the demands of the question</li><li>Relevant and accurate knowledge is demonstrated throughout, adding insight to the response</li><li>There is consistent and effective integration of evidence from the sources</li><li>The response is well-structured and effectively organised</li></ul>'},
+      {l:'Adequate',m:'7–9',mc:'rm-gold',d:'<ul><li>The response shows adequate understanding of the demands of the question</li><li>Relevant and accurate knowledge is demonstrated with some lapses</li><li>There is adequate integration of evidence from the sources, but this is not always sustained</li><li>The response is adequately organised</li></ul>'},
+      {l:'Partial',m:'4–6',mc:'rm-warn',d:'<ul><li>The response shows some understanding of the demands of the question</li><li>Some knowledge is demonstrated but this is not always relevant or accurate</li><li>Evidence from sources is partially integrated into the response</li><li>The response is partially organised</li></ul>'},
+      {l:'Limited',m:'1–3',mc:'rm-warn',d:'<ul><li>The response shows a limited understanding of the demands of the question</li><li>There is limited relevant knowledge</li><li>Evidence from sources is not integrated with the response</li><li>The response has limited organisation</li></ul>'},
+      {l:'No Response',m:'0',mc:'rm-muted',d:'The work does not reach a standard described by the descriptors.'}
+    ],
+    caps:[],
+    tips:[
+      'Spend the first 5 minutes planning — map each of the 4 sources to a claim or counter-claim before writing',
+      'Source weaving: "Source A demonstrates X, which shows that [DS concept]... This connects to Source C\'s finding that..." — not just quoting',
+      'Counter-claims are essential — one-sided responses cap at 4–6 regardless of quality',
+      'Conclusion must make a clear judgement: "On balance, the evidence suggests... only to the extent that..."',
+      'Name specific stakeholder groups — "lower-income residents", "retail chains" — not just "users" or "society"'
+    ],
+    auth:'Official IB Digital Society Paper 2 Question 4 markbands — first assessment May 2024.'
+  }
+};
+
+// ────────────────────────────────────────────────────────────
+// DATA — CHECKLISTS
+// ────────────────────────────────────────────────────────────
+const CHECKLISTS={
+  'p1-2pt':{sections:[
+    {t:'Answer Quality',items:[
+      {id:'c1',t:'Two clearly distinct answers — not two versions of the same idea',s:null},
+      {id:'c2',t:'Both answers are specific — name the component, not the category ("monitor" not "computer")',s:null},
+      {id:'c3',t:'Answers are relevant to the scenario context, not just generic knowledge',s:'EV'}
+    ]},
+    {t:'For "Outline" Questions Only',items:[
+      {id:'c4',t:'Identification present — what it is / what it does',s:'DEF'},
+      {id:'c5',t:'Brief explanation present — why it matters / what it causes',s:'IMP'}
+    ]}
+  ]},
+  'p1-6pt':{sections:[
+    {t:'Balance — Critical Requirement',items:[
+      {id:'c1',t:'At least one argument FOR the proposal developed beyond a single sentence',s:'ARG+'},
+      {id:'c2',t:'At least one argument AGAINST developed with equal rigour',s:'ARG-'}
+    ]},
+    {t:'Scenario & Evidence',items:[
+      {id:'c3',t:'Specific scenario detail named — figure, location, organisation, or statistic from the stimulus',s:'EV'},
+      {id:'c4',t:'At least one named stakeholder group identified',s:'SH'}
+    ]},
+    {t:'Depth & Terminology',items:[
+      {id:'c5',t:'Each argument has a WHY/HOW chain — claim → mechanism → consequence for stakeholder',s:'LINK'},
+      {id:'c6',t:'At least one accurate DS-specific term used in context',s:'DEF'}
+    ]},
+    {t:'Band 1 Requirement',items:[
+      {id:'c7',t:'Arguments explicitly weighed against each other — "this outweighs X because..." or middle-ground solution identified',s:'CB'}
+    ]}
+  ]},
+  'p1-8pt':{sections:[
+    {t:'Terminology (AO1)',items:[
+      {id:'c1',t:'DS vocabulary used accurately and consistently throughout — not just mentioned once',s:'DEF'}
+    ]},
+    {t:'Analysis (AO2)',items:[
+      {id:'c2',t:'Arguments FOR developed beyond a single sentence',s:'ARG+'},
+      {id:'c3',t:'Counter-arguments addressed with equal rigour — not just listed',s:'ARG-'},
+      {id:'c4',t:'Scenario referenced explicitly — specific figures, names, locations used as evidence',s:'EV'},
+      {id:'c5',t:'Multiple stakeholders considered — different impacts shown for different groups',s:'SH'}
+    ]},
+    {t:'Evaluation & Synthesis (AO3)',items:[
+      {id:'c6',t:'Costs AND benefits weighed explicitly — not just listed',s:'CB'},
+      {id:'c7',t:'Accountability dimension raised — who is responsible when the system errs?',s:'IMP'},
+      {id:'c8',t:'Conclusion offers a clear overall judgement — not just "both sides have merit"',s:'LINK'},
+      {id:'c9',t:'Conclusion is CONDITIONAL — "to the extent that..." / "only if..." / "provided that..."',s:'LINK'}
+    ]},
+    {t:'Structure',items:[
+      {id:'c10',t:'Ideas flow logically — not a list. Well-organised throughout, not just a strong conclusion',s:null}
+    ]}
+  ]},
+  'p2-2pt':{sections:[
+    {t:'Source Use',items:[
+      {id:'c1',t:'The specified source is explicitly referenced by name or number',s:'EV'},
+      {id:'c2',t:'Both points come from the source — not from general knowledge alone',s:'LINK'}
+    ]},
+    {t:'Answer Quality',items:[
+      {id:'c3',t:'Two clearly distinct features / points identified',s:null},
+      {id:'c4',t:'Both answers are specific — not vague generalisations',s:null}
+    ]}
+  ]},
+  'p2-4pt':{sections:[
+    {t:'Source Grounding',items:[
+      {id:'c1',t:'Specified source explicitly referenced by name or number',s:'EV'},
+      {id:'c2',t:'Source data / statistics / specific details used to anchor each reason',s:'LINK'}
+    ]},
+    {t:'Point Quality',items:[
+      {id:'c3',t:'Two clearly distinct reasons — not variations of the same idea',s:null},
+      {id:'c4',t:'Each reason is specific — not vague ("it is risky" without explaining what risk)',s:null}
+    ]},
+    {t:'Development — Required for Full Marks',items:[
+      {id:'c5',t:'Point 1 has a development: "This means that..." / "As a result..." / "This affects [stakeholder] because..."',s:'IMP'},
+      {id:'c6',t:'Point 2 has a development explaining its impact on the specific stakeholder or situation',s:'IMP'}
+    ]}
+  ]},
+  'p2-6pt':{sections:[
+    {t:'Command Term Compliance',items:[
+      {id:'c1',t:'Response matches command term: Compare = similarities · Contrast = differences · Both = similarities AND differences',s:null}
+    ]},
+    {t:'Source Integration — Critical',items:[
+      {id:'c2',t:'Both sources explicitly referenced throughout — not just one',s:'EV'},
+      {id:'c3',t:'Sources discussed in CONTINUOUS comparison — not Source C in para 1 then Source D in para 2',s:'LINK'},
+      {id:'c4',t:'Comparison language woven in: whereas / in contrast / similarly / both / however / unlike',s:null}
+    ]},
+    {t:'Comparison Quality',items:[
+      {id:'c5',t:'At least 3 developed comparison points — not just listing similarities/differences',s:null},
+      {id:'c6',t:'Each point makes a direct link BETWEEN sources simultaneously — not describing each in turn',s:'CB'},
+      {id:'c7',t:'Each comparison is developed — explains what the difference/similarity demonstrates ("This suggests...")',s:'IMP'}
+    ]}
+  ]},
+  'p2-12pt':{sections:[
+    {t:'Introduction',items:[
+      {id:'c1',t:'Key concept(s) defined clearly in opening',s:'DEF'},
+      {id:'c2',t:'Clear line of argument or thesis from the start — addresses the specific command term',s:null}
+    ]},
+    {t:'Arguments & Analysis',items:[
+      {id:'c3',t:'2+ arguments FOR the proposition, each developed beyond a single sentence',s:'ARG+'},
+      {id:'c4',t:'2+ counter-claims developed with equal rigour',s:'ARG-'},
+      {id:'c5',t:'Each argument explains WHY/HOW — not just WHAT',s:'LINK'}
+    ]},
+    {t:'Source Integration — The Critical Dimension',items:[
+      {id:'c6',t:'At least 3 different sources referenced across the response — not clustered in one paragraph',s:'EV'},
+      {id:'c7',t:'Sources WOVEN INTO arguments — "Source X shows Y, which demonstrates Z about..."',s:'LINK'},
+      {id:'c8',t:'Sources add insight — analysis goes beyond summary of what the source says',s:'IMP'}
+    ]},
+    {t:'Stakeholder & Impact Analysis',items:[
+      {id:'c9',t:'Multiple specific stakeholder groups identified — not just "users" or "society"',s:'SH'},
+      {id:'c10',t:'Costs AND benefits explicitly compared and weighed — different impacts for different groups',s:'CB'}
+    ]},
+    {t:'Conclusion & Structure',items:[
+      {id:'c11',t:'Clear overall judgement — not just "both sides have merit"',s:null},
+      {id:'c12',t:'Conclusion is conditional and supported by body reasoning — not a new claim',s:'LINK'},
+      {id:'c13',t:'Response is well-structured and effectively organised throughout',s:null}
+    ]}
+  ]}
+};
+
+// ────────────────────────────────────────────────────────────
+// SCORE BANDS
+// ────────────────────────────────────────────────────────────
+const BANDS={
+  'p1-6pt':[
+    {min:5,max:6,label:'Band 1 — Excellent',color:'var(--ok)'},
+    {min:3,max:4,label:'Band 2 — Adequate',color:'var(--gold)'},
+    {min:1,max:2,label:'Band 3 — Limited',color:'var(--warn)'},
+    {min:0,max:0,label:'Band 4 — No response',color:'var(--muted)'}
+  ],
+  'p1-8pt':[
+    {min:7,max:8,label:'In-depth (7–8)',color:'var(--ok)'},
+    {min:5,max:6,label:'Adequate (5–6)',color:'var(--gold)'},
+    {min:3,max:4,label:'Partial (3–4)',color:'var(--warn)'},
+    {min:1,max:2,label:'Limited (1–2)',color:'var(--warn)'},
+    {min:0,max:0,label:'No response',color:'var(--muted)'}
+  ],
+  'p2-12pt':[
+    {min:10,max:12,label:'In-depth (10–12)',color:'var(--ok)'},
+    {min:7,max:9,label:'Adequate (7–9)',color:'var(--gold)'},
+    {min:4,max:6,label:'Partial (4–6)',color:'var(--warn)'},
+    {min:1,max:3,label:'Limited (1–3)',color:'var(--warn)'},
+    {min:0,max:0,label:'No response',color:'var(--muted)'}
+  ]
+};
+
+const PAPER_QS={
+  p1:['p1-2pt','p1-6pt','p1-8pt'],
+  p2:['p2-2pt','p2-4pt','p2-6pt','p2-12pt']
+};
+const Q_LABELS={'p1-2pt':'P1 · 2pt','p1-6pt':'P1 · 6pt','p1-8pt':'P1 · 8pt','p2-2pt':'P2 · 2pt','p2-4pt':'P2 · 4pt','p2-6pt':'P2 · 6pt','p2-12pt':'P2 · 12pt'};
+const Q_MAX={'p1-2pt':2,'p1-6pt':6,'p1-8pt':8,'p2-2pt':2,'p2-4pt':4,'p2-6pt':6,'p2-12pt':12};
+
+// ────────────────────────────────────────────────────────────
+// RENDER
+// ────────────────────────────────────────────────────────────
+function renderRubric(){
+  const r=RUBRICS[S.qtype];
+  let nc='';
+  if(r.noticeType==='red')nc=' red';
+  else if(r.noticeType==='green')nc=' green';
+  let h=`<div class="r-title">${r.title}</div>
+    <div class="r-sub">${r.cmd}<br>${r.ao}</div>`;
+  if(r.notice)h+=`<div class="r-notice${nc}">${r.notice}</div>`;
+  r.bands.forEach(b=>{
+    h+=`<div class="rband"><div class="rband-head">
+      <span class="rlvl">${b.l}</span>
+      <span class="rmarks ${b.mc}">${b.m}</span></div>
+      <div class="rdesc">${b.d}</div></div>`;
+  });
+  h+=`<div class="rtips"><div class="rtips-title">⚡ Examiner Tips</div><ul>`;
+  r.tips.forEach(t=>h+=`<li>${t}</li>`);
+  h+=`</ul></div>`;
+  if(r.auth)h+=`<div class="rauth"><strong>Source:</strong> ${r.auth}</div>`;
+  document.getElementById('pane-rubric').innerHTML=h;
+}
+
+function renderChecklist(restore){
+  const cl=CHECKLISTS[S.qtype];
+  const total=cl.sections.reduce((a,s)=>a+s.items.length,0);
+  let h=`<div class="leg-grid">`;
+  Object.entries(LABELS).forEach(([k,v])=>{
+    h+=`<div class="leg-item"><span class="leg-badge" style="background:${COLORS[k]}">${k}</span><span>${v}</span></div>`;
+  });
+  h+=`</div>
+    <div class="cl-meta"><span>Progress</span><span id="pCount">0 / ${total}</span></div>
+    <div class="pbar-wrap"><div class="pbar" id="pBar"></div></div>`;
+  cl.sections.forEach(sec=>{
+    h+=`<div class="cl-section"><div class="cl-sec-title">${sec.t}</div>`;
+    sec.items.forEach(item=>{
+      const badge=item.s?`<span class="sbadge" style="background:${COLORS[item.s]}">${item.s}</span>`:'';
+      const chk=restore&&restore.checked&&restore.checked.includes(item.id)?'checked':'';
+      h+=`<div class="ci"><input type="checkbox" id="${item.id}" ${chk} onchange="onCheckChange()">
+        <label class="ci-label" for="${item.id}">${badge}${item.t}</label></div>`;
+    });
+    h+=`</div>`;
+  });
+  h+=`<div class="cl-notes-label">Your Notes</div>
+    <textarea class="cl-notes" id="clNotes" placeholder="Write observations, questions, or peer feedback here…" oninput="updateScore()">${restore&&restore.notes?restore.notes:''}</textarea>`;
+  document.getElementById('pane-checklist').innerHTML=h;
+  updProgress();
+}
+
+function onCheckChange(){updProgress();updateScore();}
+
+function updProgress(){
+  const cl=CHECKLISTS[S.qtype];
+  const total=cl.sections.reduce((a,s)=>a+s.items.length,0);
+  const done=document.querySelectorAll('#pane-checklist input:checked').length;
+  const pct=total>0?Math.round(done/total*100):0;
+  const bar=document.getElementById('pBar');if(bar)bar.style.width=pct+'%';
+  const cnt=document.getElementById('pCount');if(cnt)cnt.textContent=`${done} / ${total}`;
+}
+
+function renderScore(){
+  const qid=S.qtype;
+  const max=Q_MAX[qid];
+  const caps=RUBRICS[qid].caps||[];
+  let h=`<div class="score-display">
+    <div class="score-lbl">Estimated Mark</div>
+    <div class="score-big"><span id="scoreNum">—</span><span class="denom"> / ${max}</span></div>
+    <div class="score-band-lbl" id="scoreBandLbl">Complete the checklist to estimate your band</div>
+  </div>
+  <div class="score-bar-wrap">
+    <div class="score-bar-lbl"><span>Score</span><span id="scorePct">0%</span></div>
+    <div class="score-track"><div class="score-fill" id="scoreBar" style="width:0%"></div></div>
+  </div>`;
+
+  if(caps.length>0){
+    h+=`<div class="caps-section"><div class="caps-title">⚠ Hard Cap Checks</div>`;
+    caps.forEach((cap,i)=>{
+      h+=`<button class="cap-toggle" id="capToggle${i}" onclick="toggleCap(${i})">
+        <div class="cap-cb">
+          <svg width="9" height="7" viewBox="0 0 10 8" stroke="white" stroke-width="2.5" fill="none"><polyline points="1,4 3.5,7 9,1"/></svg>
+        </div>
+        <div>
+          <div class="cap-text">${cap.label}</div>
+          <div class="cap-result">→ cap applied: max ${cap.capMark}/${max}</div>
+        </div>
+      </button>`;
+    });
+    h+=`</div>`;
+    caps.forEach((_,i)=>{
+      h+=`<div class="score-alert" id="capAlert${i}" style="display:none"></div>`;
+    });
+  }
+  document.getElementById('pane-score').innerHTML=h;
+  // reset caps state for this question
+  S.caps={};
+  updateScore();
+}
+
+function toggleCap(i){
+  const btn=document.getElementById('capToggle'+i);
+  const triggered=btn.classList.toggle('triggered');
+  S.caps[i]=triggered;
+  const cap=RUBRICS[S.qtype].caps[i];
+  const alert=document.getElementById('capAlert'+i);
+  if(alert){
+    alert.style.display=triggered?'block':'none';
+    alert.className='score-alert '+(cap.type==='err'?'err':'warn');
+    alert.textContent=cap.msg;
+  }
+  updateScore();
+}
+
+function updateScore(){
+  const scoreNumEl=document.getElementById('scoreNum');
+  if(!scoreNumEl)return;
+  const qid=S.qtype;
+  const max=Q_MAX[qid];
+  const cl=CHECKLISTS[qid];
+  const total=cl.sections.reduce((a,s)=>a+s.items.length,0);
+  const done=document.querySelectorAll('#pane-checklist input:checked').length;
+
+  // Raw estimate from checklist completeness
+  let score=total>0?Math.round((done/total)*max):0;
+
+  // Apply hard caps
+  let capScore=max;
+  const caps=RUBRICS[qid].caps||[];
+  caps.forEach((_,i)=>{
+    if(S.caps[i])capScore=Math.min(capScore,caps[i].capMark);
+  });
+  score=Math.min(score,capScore);
+
+  scoreNumEl.textContent=score;
+  const pct=Math.round((score/max)*100);
+  document.getElementById('scorePct').textContent=pct+'%';
+  document.getElementById('scoreBar').style.width=pct+'%';
+
+  // Band label
+  const bands=BANDS[qid];
+  const lbl=document.getElementById('scoreBandLbl');
+  if(lbl){
+    if(bands){
+      const b=bands.find(bd=>score>=bd.min&&score<=bd.max);
+      lbl.innerHTML=b?`<strong style="color:${b.color}">${b.label}</strong>`:'';
+    } else {
+      lbl.innerHTML=total>0?`<strong>${score} / ${max} marks estimated (point-based)</strong>`:'Complete the checklist to estimate';
+    }
+  }
+}
+
+// ────────────────────────────────────────────────────────────
+// NAVIGATION
+// ────────────────────────────────────────────────────────────
+function setPaper(paper){
+  S.paper=paper;
+  document.getElementById('pt-p1').classList.toggle('on',paper==='p1');
+  document.getElementById('pt-p2').classList.toggle('on',paper==='p2');
+  buildQTabs(paper);
+  setQ(PAPER_QS[paper][0]);
+}
+
+function buildQTabs(paper){
+  const qtabs=document.getElementById('qtabs');
+  qtabs.innerHTML='';
+  PAPER_QS[paper].forEach(qid=>{
+    const btn=document.createElement('button');
+    btn.className='qtab';
+    btn.textContent=Q_LABELS[qid];
+    btn.dataset.q=qid;
+    btn.onclick=()=>setQ(qid);
+    qtabs.appendChild(btn);
+  });
+}
+
+function setQ(qid){
+  S.qtype=qid;
+  S.caps={};
+  document.querySelectorAll('.qtab').forEach(b=>b.classList.toggle('on',b.dataset.q===qid));
+  renderRubric();
+  renderChecklist();
+  renderScore();
+}
+
+function switchTab(name,btn){
+  document.querySelectorAll('.pane').forEach(p=>p.classList.remove('on'));
+  document.querySelectorAll('.r-tab').forEach(b=>b.classList.remove('on'));
+  document.getElementById('pane-'+name).classList.add('on');
+  btn.classList.add('on');
+  if(name==='score')updateScore();
+}
+
+function toggleTheme(){
+  const html=document.documentElement;
+  const dark=html.getAttribute('data-theme')==='dark';
+  html.setAttribute('data-theme',dark?'light':'dark');
+  document.getElementById('themeBtn').textContent=dark?'☀️':'🌙';
+}
+
+function openModal(){document.getElementById('modalBg').classList.add('vis')}
+function closeModal(){document.getElementById('modalBg').classList.remove('vis')}
+
+// ────────────────────────────────────────────────────────────
+// FILE UPLOAD
+// ────────────────────────────────────────────────────────────
+async function onUpload(e){
+  const file=e.target.files[0];if(!file)return;
+  document.getElementById('emptyMsg').style.display='none';
+  document.getElementById('docWrap').style.display='block';
+  S.stamps=[];S.imageDataURL=null;renderStamps();
+  document.getElementById('exportBtn').disabled=false;
+  if(file.type==='application/pdf'){S.fileType='pdf';await loadPDF(file);}
+  else if(file.type.startsWith('image/')){S.fileType='image';await loadImg(file);}
+}
+async function loadPDF(file){
+  const buf=await file.arrayBuffer();
+  S.pdfDoc=await pdfjsLib.getDocument({data:buf}).promise;
+  S.pages=S.pdfDoc.numPages;S.page=1;
+  document.getElementById('imgView').style.display='none';
+  document.getElementById('pdfCanvas').style.display='block';
+  updNav();await renderPage(1);
+}
+async function renderPage(n){
+  const pg=await S.pdfDoc.getPage(n);
+  const canvas=document.getElementById('pdfCanvas');
+  const vp=pg.getViewport({scale:1.5});
+  canvas.width=vp.width;canvas.height=vp.height;
+  await pg.render({canvasContext:canvas.getContext('2d'),viewport:vp}).promise;
+  S.imageDataURL=canvas.toDataURL('image/jpeg',0.85);
+  renderStamps();
+}
+async function loadImg(file){
+  return new Promise(res=>{
+    const url=URL.createObjectURL(file);
+    const img=document.getElementById('imgView');
+    document.getElementById('pdfCanvas').style.display='none';
+    img.style.display='block';
+    img.onload=()=>{
+      const c=document.createElement('canvas');
+      c.width=img.naturalWidth;c.height=img.naturalHeight;
+      c.getContext('2d').drawImage(img,0,0);
+      S.imageDataURL=c.toDataURL('image/jpeg',0.85);
+      res();
+    };
+    img.src=url;
+  });
+}
+function updNav(){
+  document.getElementById('pageInfo').textContent=S.pages>1?`${S.page}/${S.pages}`:'1 pg';
+  document.getElementById('prevP').disabled=S.page<=1;
+  document.getElementById('nextP').disabled=S.page>=S.pages;
+}
+async function goPage(d){
+  const np=S.page+d;if(np<1||np>S.pages)return;
+  S.stamps=S.stamps.filter(st=>st.pg!==S.page);renderStamps();
+  S.page=np;updNav();await renderPage(np);
+}
+
+// ────────────────────────────────────────────────────────────
+// STAMPS
+// ────────────────────────────────────────────────────────────
+function activateStamp(btn){
+  const type=btn.dataset.s;
+  if(S.activeStamp===type){
+    S.activeStamp=null;
+    document.querySelectorAll('.s-btn').forEach(b=>b.classList.remove('on'));
+    document.getElementById('overlay').classList.remove('placing');
+    document.getElementById('modePill').classList.remove('vis');
+    return;
+  }
+  S.activeStamp=type;
+  document.querySelectorAll('.s-btn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  document.getElementById('overlay').classList.add('placing');
+  document.getElementById('modePill').classList.add('vis');
+}
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'&&S.activeStamp){
+    S.activeStamp=null;
+    document.querySelectorAll('.s-btn').forEach(b=>b.classList.remove('on'));
+    document.getElementById('overlay').classList.remove('placing');
+    document.getElementById('modePill').classList.remove('vis');
+  }
+});
+function placeStamp(e){
+  if(!S.activeStamp)return;
+  const ov=document.getElementById('overlay');
+  const rc=ov.getBoundingClientRect();
+  const x=((e.clientX-rc.left)/rc.width)*100;
+  const y=((e.clientY-rc.top)/rc.height)*100;
+  S.stamps.push({id:++S.stampN,type:S.activeStamp,x,y,pg:S.page});
+  renderStamps();
+}
+function renderStamps(){
+  const ov=document.getElementById('overlay');
+  ov.querySelectorAll('.stag').forEach(el=>el.remove());
+  S.stamps.filter(st=>st.pg===S.page).forEach(st=>{
+    const el=document.createElement('div');
+    el.className='stag';
+    el.style.cssText=`left:${st.x}%;top:${st.y}%;background:${COLORS[st.type]}`;
+    el.innerHTML=`${st.type}<span class="x" title="Double-click to remove" ondblclick="removeStamp(${st.id})">×</span>`;
+    makeDraggable(el,st);
+    ov.appendChild(el);
+  });
+}
+function removeStamp(id){S.stamps=S.stamps.filter(s=>s.id!==id);renderStamps();}
+function makeDraggable(el,st){
+  el.addEventListener('mousedown',e=>{
+    if(e.target.classList.contains('x'))return;
+    e.stopPropagation();
+    let sx=e.clientX,sy=e.clientY,ox=st.x,oy=st.y;
+    const ov=document.getElementById('overlay');
+    const rc=ov.getBoundingClientRect();
+    const mv=me=>{
+      st.x=Math.max(0,Math.min(100,ox+((me.clientX-sx)/rc.width)*100));
+      st.y=Math.max(0,Math.min(100,oy+((me.clientY-sy)/rc.height)*100));
+      el.style.left=st.x+'%';el.style.top=st.y+'%';
+    };
+    const up=()=>{document.removeEventListener('mousemove',mv);document.removeEventListener('mouseup',up)};
+    document.addEventListener('mousemove',mv);document.addEventListener('mouseup',up);
+  });
+}
+
+// ────────────────────────────────────────────────────────────
+// EXPORT
+// ────────────────────────────────────────────────────────────
+function getCheckedIds(){
+  return [...document.querySelectorAll('#pane-checklist input:checked')].map(el=>el.id);
+}
+function getNotes(){
+  const n=document.getElementById('clNotes');return n?n.value:'';
+}
+
+function exportSnapshot(){
+  if(!S.imageDataURL){alert('Please upload an answer first.');return;}
+  const state={
+    paper:S.paper, qtype:S.qtype, theme:document.documentElement.getAttribute('data-theme'),
+    stamps:S.stamps, stampN:S.stampN, pages:S.pages, page:S.page,
+    fileType:S.fileType, imageDataURL:S.imageDataURL, caps:S.caps,
+    checked:getCheckedIds(), notes:getNotes(), exportedAt:new Date().toLocaleString()
+  };
+  const src=document.documentElement.outerHTML;
+  const injected=src.replace('const SAVED_STATE = null;','const SAVED_STATE = '+JSON.stringify(state)+';');
+  const blob=new Blob([injected],{type:'text/html'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  const ts=new Date().toISOString().slice(0,10);
+  a.href=url;
+  a.download=`ib-digsoc-${state.qtype}-${ts}.html`;
+  a.click();
+  URL.revokeObjectURL(url);
+  const badge=document.getElementById('savedBadge');
+  badge.textContent='✓ Exported';
+  badge.className='saved-badge snapshot';
+  setTimeout(()=>badge.className='saved-badge',3000);
+}
+
+// ────────────────────────────────────────────────────────────
+// RESTORE SAVED STATE
+// ────────────────────────────────────────────────────────────
+async function restoreState(state){
+  S.paper=state.paper||'p1';
+  S.qtype=state.qtype||'p1-2pt';
+  // theme
+  if(state.theme){
+    document.documentElement.setAttribute('data-theme',state.theme);
+    document.getElementById('themeBtn').textContent=state.theme==='dark'?'🌙':'☀️';
+  }
+  // paper + question tabs
+  document.getElementById('pt-p1').classList.toggle('on',S.paper==='p1');
+  document.getElementById('pt-p2').classList.toggle('on',S.paper==='p2');
+  buildQTabs(S.paper);
+  document.querySelectorAll('.qtab').forEach(b=>b.classList.toggle('on',b.dataset.q===S.qtype));
+  // caps
+  S.caps=state.caps||{};
+  renderRubric();
+  renderChecklist({checked:state.checked,notes:state.notes});
+  renderScore();
+  // re-apply cap toggles
+  Object.entries(S.caps).forEach(([i,v])=>{
+    if(v){
+      const btn=document.getElementById('capToggle'+i);
+      if(btn){
+        btn.classList.add('triggered');
+        const cap=RUBRICS[S.qtype].caps[parseInt(i)];
+        const alert=document.getElementById('capAlert'+i);
+        if(alert){alert.style.display='block';alert.className='score-alert '+(cap.type==='err'?'err':'warn');alert.textContent=cap.msg;}
+      }
+    }
+  });
+  updateScore();
+  // image
+  if(state.imageDataURL){
+    document.getElementById('emptyMsg').style.display='none';
+    document.getElementById('docWrap').style.display='block';
+    document.getElementById('exportBtn').disabled=false;
+    S.fileType=state.fileType;S.pages=state.pages;S.page=state.page;
+    S.imageDataURL=state.imageDataURL;S.stamps=state.stamps||[];S.stampN=state.stampN||0;
+    const img=document.getElementById('imgView');
+    document.getElementById('pdfCanvas').style.display='none';
+    img.style.display='block';img.src=state.imageDataURL;
+    updNav();
+    await new Promise(r=>img.complete?r():img.addEventListener('load',r,{once:true}));
+    renderStamps();
+    const badge=document.getElementById('savedBadge');
+    badge.textContent='↩ Restored · '+state.exportedAt;
+    badge.className='saved-badge restored';
+  }
+}
+
+// ────────────────────────────────────────────────────────────
+// INIT
+// ────────────────────────────────────────────────────────────
+if(SAVED_STATE){
+  restoreState(SAVED_STATE);
+} else {
+  buildQTabs('p1');
+  setQ('p1-2pt');
+  openModal();
+}
+</script>
+</body>
+</html>
